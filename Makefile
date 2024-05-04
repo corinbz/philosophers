@@ -1,6 +1,6 @@
-NAME = philosophers
+NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -pthread
 
 OBJDIR = ./obj/
 
