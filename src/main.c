@@ -10,28 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-
-• Your(s) program(s) should take the following arguments:
-number_of_philosophers time_to_die time_to_eat time_to_sleep
-[number_of_times_each_philosopher_must_eat]
-◦ number_of_philosophers: The number of philosophers and also the number
-of forks.
-◦ time_to_die (in milliseconds): If a philosopher didn’t start eating time_to_die
-milliseconds since the beginning of their last meal or the beginning of the sim-
-ulation, they die.
-◦ time_to_eat (in milliseconds): The time it takes for a philosopher to eat.
-During that time, they will need to hold two forks.
-◦ time_to_sleep (in milliseconds): The time a philosopher will spend sleeping.
-◦ number_of_times_each_philosopher_must_eat (optional argument): If all
-philosophers have eaten at least number_of_times_each_philosopher_must_eat
-times, the simulation stops. If not specified, the simulation stops when a
-philosopher dies.
-• Each philosopher has a number ranging from 1 to number_of_philosophers.
-• Philosopher number 1 sits next to philosopher number number_of_philosophers.
-Any other philosopher number N sits between philosopher number N - 1 and philoso-
-pher number N + 1.
-*/
 #include "../include/philosophers.h"
 
 void* routine()
@@ -39,10 +17,39 @@ void* routine()
 	printf("Hello from thread\n");
 	return (void*) NULL;
 }
-int main(void)
+bool get_args (int ac, char **av, t_args *args)
 {
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return 0;
+	if (ac == 5 || ac == 6)
+	{
+		args->total_phil = ft_atoi(av[1]);
+		args->forks = args->total_phil;
+		args->time_to_die = ft_atoi(av[2]);
+		args->time_to_eat = ft_atoi(av[3]);
+		args->time_to_sleep = ft_atoi(av[4]);
+		if (ac == 6)
+		args->max_meals = ft_atoi(av[5]);
+		return (true);
+	}
+	printf("Invalid number of arguments\n");
+	return (false);
+}
+
+void display_args(t_args *args)
+{
+    printf("Total philosophers: %d\n", args->total_phil);
+    printf("Forks: %d\n", args->forks);
+    printf("Time to die: %d\n", args->time_to_die);
+    printf("Time to eat: %d\n", args->time_to_eat);
+    printf("Time to sleep: %d\n", args->time_to_sleep);
+    printf("Max meals: %d\n", args->max_meals);
+}
+int main(int ac, char **av)
+{
+	t_args args;
+
+	args = (t_args){0};
+	if(!get_args(ac, av, &args))
+		return (1);
+	display_args(&args);
+	return (0);
 }
