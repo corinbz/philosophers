@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:40:23 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/05/04 13:53:56 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/08/03 13:06:47 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,10 @@ int	ft_atoi(const char *str)
 		index++;
 	}
 	return (result * sign);
+}
+int	ft_isdigit(int s)
+{
+	if (s <= '9' && s >= '0')
+		return (1);
+	return (0);
 }
