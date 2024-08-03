@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/03 14:12:35 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:15:58 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,55 +17,55 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-typedef struct s_args
+typedef struct
 {
-	int	total_phil;
-	int	forks;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	max_meals;
-}	t_args;
-
-typedef struct s_philo
-{
-	pthread_t		thread;
 	int				id;
-	int				eating;
+	pthread_t		thread;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 	int				meals_eaten;
-	size_t			last_meal;
-	size_t			start_time;
-	int				*dead;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*write_lock;
-	pthread_mutex_t	*dead_lock;
-	pthread_mutex_t	*meal_lock;
-}					t_philo;
+	long long		last_meal_time;
+	int				*simulation_stop;
+	pthread_mutex_t	*print_mutex;
+	int				time_to_die;
+	int				time_to_eat; 
+	int				time_to_sleep;
+	int				num_times_to_eat;
+}					t_philosopher;
 
-typedef struct s_program
+typedef struct
 {
-	int				dead_flag;
-	pthread_mutex_t	dead_lock;
-	pthread_mutex_t	meal_lock;
-	pthread_mutex_t	write_lock;
-	t_philo			*philos;
-}					t_program;
+	t_philosopher	*philosophers;
+	pthread_mutex_t	*forks;
+	int				num_philosophers;
+	int				time_to_die;
+	int				time_to_eat; 
+	int				time_to_sleep;
+	int				num_times_to_eat;
+	int				simulation_stop;
+	pthread_mutex_t	print_mutex;
+}	t_simulation;
 
 //utils
 int		ft_atoi(const char *str);
 int		ft_isdigit(int s);
+void	*ft_calloc(size_t num_elements, size_t element_size);
+size_t	ft_strlen(const char *str);
+int	ft_error(const char* err);
 
 //args_utils
-bool	get_args (int ac, char **av, t_args *args);
-int		display_args(t_args *args);
 bool	valid_args(char **av);
 
-//time utils
-int		ft_usleep(size_t milliseconds);
-size_t	get_current_time(void);
+//philo
+void *philosopher_routine(void *arg);
+void print_status(t_philosopher *philo, const char *status);
+//simulation
+void start_simulation(t_simulation *sim);
+void *monitor_simulation(void *arg);
+// //time utils
+void cleanup_simulation(t_simulation *sim);
+void ft_usleep(long long time);
+long long get_current_time(void);
 
-//init structs
-int		init_program(t_program *program, t_philo *philos);
-int		init_forks(pthread_mutex_t *forks, int total_phil);
-int		init_philos(t_args *args, t_philo *philos, t_program *program, pthread_mutex_t *forks);
+// //init structs
+t_simulation	*init_simulation (int ac, char **av);

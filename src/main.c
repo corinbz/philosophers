@@ -12,26 +12,17 @@
 
 #include "../include/philosophers.h"
 
-void* routine()
-{
-	printf("Hello from thread\n");
-	return (void*) NULL;
-}
-
 int main(int ac, char **av)
 {
-	t_args			args;
-	t_program		program;
-	pthread_mutex_t	forks[200];
-	t_philo			philos[200];
+	t_simulation *sim;
+	pthread_t monitor_thread;
 
-	args = (t_args){0};
-	if(!get_args(ac, av, &args))
-		return (1);
-	if(display_args(&args) == 1)
-		return (1);
-	init_program(&program, philos);
-	init_forks(forks, args.total_phil);
-	init_philos(&args, philos, &program, forks);
+	sim = init_simulation(ac, av);
+	if (!sim)
+		return(ft_error("Failed to initialize simulation\n"));
+	start_simulation(sim);
+	pthread_create(&monitor_thread, NULL, monitor_simulation, sim);
+	pthread_join(monitor_thread, NULL);
+	cleanup_simulation(sim);
 	return (0);
 }

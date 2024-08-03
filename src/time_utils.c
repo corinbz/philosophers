@@ -6,28 +6,31 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 13:17:50 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/03 13:19:01 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/08/03 15:36:41 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 // Improved version of sleep function
-int	ft_usleep(size_t milliseconds)
+void ft_usleep(long long time)
 {
-	size_t	start;
+    long long start;
+    long long elapsed;
 
-	start = get_current_time();
-	while ((get_current_time() - start) < milliseconds)
-		usleep(500);
-	return (0);
+    start = get_current_time();
+    while (1)
+    {
+        elapsed = get_current_time() - start;
+        if (elapsed >= time / 1000)
+            break;
+        usleep(100);  // Sleep in short intervals
+    }
 }
 // Gets the current time in milliseconds
-size_t	get_current_time(void)
+long long get_current_time()
 {
-	struct timeval	time;
-
-	if (gettimeofday(&time, NULL) == -1)
-		write(2, "gettimeofday() error\n", 22);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+	struct timeval	tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
 }
