@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: corin <corin@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:02:26 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/04/30 21:09:54by corin            ###   ########.fr       */
+/*   Updated: 2024/08/10 14:41:32 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,23 @@
 
 int main(int ac, char **av)
 {
-	t_simulation *sim;
-	pthread_t monitor_thread;
+ t_simulation *sim;
+ pthread_t monitor_thread;
+ int ret;
 
-	sim = init_simulation(ac, av);
-	if (!sim)
-		return(ft_error("Failed to initialize simulation\n"));
-	start_simulation(sim);
-	pthread_create(&monitor_thread, NULL, monitor_simulation, sim);
-	pthread_join(monitor_thread, NULL);
-	cleanup_simulation(sim);
-	return (0);
+ sim = init_simulation(ac, av);
+ if (!sim)
+  return (ft_error("Failed to initialize simulation\n"));
+ ret = pthread_create(&monitor_thread, NULL, monitor_simulation, sim);
+ if (ret != 0)
+ {
+  cleanup_simulation(sim);
+  return (ft_error("Failed to create monitor thread\n"));
+ }
+ start_simulation(sim);
+ ret = pthread_join(monitor_thread, NULL);
+ if (ret != 0)
+  ft_error("Failed to join monitor thread\n");
+ cleanup_simulation(sim);
+ return (0);
 }
