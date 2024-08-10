@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 12:59:01 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/10 14:40:42 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:40:20 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ static int init_mutexes(t_simulation *sim)
 static void init_philosophers(t_simulation *sim)
 {
     int i;
+    long long start_time = get_current_time();
 
     for (i = 0; i < sim->num_philosophers; i++)
     {
@@ -91,7 +92,7 @@ static void init_philosophers(t_simulation *sim)
         sim->philosophers[i].left_fork = &sim->forks[i];
         sim->philosophers[i].right_fork = &sim->forks[(i + 1) % sim->num_philosophers];
         sim->philosophers[i].meals_eaten = 0;
-        sim->philosophers[i].last_meal_time = get_current_time();
+        sim->philosophers[i].last_meal_time = start_time;
         sim->philosophers[i].simulation_stop = &sim->simulation_stop;
         sim->philosophers[i].print_mutex = &sim->print_mutex;
         sim->philosophers[i].time_to_die = sim->time_to_die;
@@ -103,6 +104,7 @@ static void init_philosophers(t_simulation *sim)
         sim->philosophers[i].num_philosophers = sim->num_philosophers;
     }
 }
+
 
 t_simulation *init_simulation(int ac, char **av)
 {
