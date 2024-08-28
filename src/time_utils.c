@@ -14,14 +14,14 @@
 
 void ft_usleep(long long time)
 {
-    long long start = get_current_time();
-    while (get_current_time() - start < time / 1000)
-        usleep(100);
+	long long start = get_current_time();
+	while (get_current_time() - start < time / 1000)
+		usleep(100);
 }
 
 long long get_current_time(void)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000);
 }

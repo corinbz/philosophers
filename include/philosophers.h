@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
-# define PHILOSOPHERS_H
+#define PHILOSOPHERS_H
 
 # include <stdio.h>
 # include <pthread.h>
@@ -23,37 +23,37 @@
 
 typedef struct s_philosopher
 {
-    int             id;
-    pthread_t       thread;
-    pthread_mutex_t *left_fork;
-    pthread_mutex_t *right_fork;
-    int             meals_eaten;
-    long long       last_meal_time;
-    int             *simulation_stop;
-    pthread_mutex_t *print_mutex;
-    int             time_to_die;
-    int             time_to_eat;
-    int             time_to_sleep;
-    int             num_times_to_eat;
-    pthread_mutex_t *waiter_mutex;
-    bool            *forks_available;
-    int             num_philosophers;
-    int             is_full;
+	int				id;
+	pthread_t		thread;
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t *right_fork;
+	int             meals_eaten;
+	long long       last_meal_time;
+	int             *simulation_stop;
+	pthread_mutex_t *print_mutex;
+	int             time_to_die;
+	int             time_to_eat;
+	int             time_to_sleep;
+	int             num_times_to_eat;
+	pthread_mutex_t *waiter_mutex;
+	bool            *forks_available;
+	int             num_philosophers;
+	bool            is_full;
 } t_philosopher;
 
 typedef struct s_simulation
 {
-    t_philosopher   *philosophers;
-    pthread_mutex_t *forks;
-    int             num_philosophers;
-    int             time_to_die;
-    int             time_to_eat;
-    int             time_to_sleep;
-    int             num_times_to_eat;
-    int             simulation_stop;
-    pthread_mutex_t print_mutex;
-    pthread_mutex_t waiter_mutex;
-    bool            *forks_available;
+	t_philosopher   *philosophers;
+	pthread_mutex_t *forks;
+	int             num_philosophers;
+	int             time_to_die;
+	int             time_to_eat;
+	int             time_to_sleep;
+	int             num_times_to_eat;
+	int             simulation_stop;
+	pthread_mutex_t print_mutex;
+	pthread_mutex_t waiter_mutex;
+	bool            *forks_available;
 } t_simulation;
 
 // Initialization
