@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:13:47 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 14:29:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_simulation
 
 // Initialization
 t_simulation	*init_simulation(int ac, char **av);
+int				parse_arguments(t_simulation *sim, int ac, char **av);
 
 // Simulation control
 int				start_simulation(t_simulation *sim);

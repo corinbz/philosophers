@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 12:27:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 13:46:20 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 14:23:40 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,28 @@ int	start_simulation(t_simulation	*sim)
 	return (0);
 }
 
+static bool	check_philosopher_health(t_simulation *sim, int i)
+{
+	long long	current_time;
+	long long	ate_last;
+
+	current_time = get_current_time();
+	ate_last = current_time - sim->philosophers[i].last_meal_time;
+	if (ate_last > sim->time_to_die)
+	{
+		pthread_mutex_lock(&sim->print_mutex);
+		printf("%lld %d died\n", current_time, sim->philosophers[i].id);
+		sim->simulation_stop = 1;
+		pthread_mutex_unlock(&sim->print_mutex);
+		return (false);
+	}
+	return (true);
+}
+
 void	*monitor_simulation(void *arg)
 {
 	t_simulation	*sim;
 	int				i;
-	long long		current_time;
-	long long		ate_last;
 
 	sim = (t_simulation *)arg;
 	i = 0;
@@ -63,17 +79,8 @@ void	*monitor_simulation(void *arg)
 		i = 0;
 		while (i < sim->num_philosophers)
 		{
-			current_time = get_current_time();
-			ate_last = current_time - sim->philosophers[i].last_meal_time;
-			if (ate_last > sim->time_to_die)
-			{
-				// printf("ate last %lld \n", ate_last);
-				pthread_mutex_lock(&sim->print_mutex);
-				printf("%lld %d died\n", current_time, sim->philosophers[i].id);
-				sim->simulation_stop = 1;
-				pthread_mutex_unlock(&sim->print_mutex);
+			if (!check_philosopher_health(sim, i))
 				return (NULL);
-			}
 			i++;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 13:33:53 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 14:18:05 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	cleanup_simulation(t_simulation *sim)
 	if (!sim)
 		return ;
 	i = 0;
-
 	while (i < sim->num_philosophers)
 	{
 		if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
