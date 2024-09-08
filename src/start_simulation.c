@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 12:27:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 12:52:42 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 13:46:20 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	*monitor_simulation(void *arg)
 			ate_last = current_time - sim->philosophers[i].last_meal_time;
 			if (ate_last > sim->time_to_die)
 			{
+				// printf("ate last %lld \n", ate_last);
 				pthread_mutex_lock(&sim->print_mutex);
 				printf("%lld %d died\n", current_time, sim->philosophers[i].id);
 				sim->simulation_stop = 1;

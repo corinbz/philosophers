@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/10 15:04:06 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 13:33:32 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ typedef struct s_philosopher
 	int             time_to_eat;
 	int             time_to_sleep;
 	int             num_times_to_eat;
-	pthread_mutex_t *waiter_mutex;
-	bool            *forks_available;
 	int             num_philosophers;
 	bool            is_full;
 } t_philosopher;
@@ -52,7 +50,6 @@ typedef struct s_simulation
 	int             num_times_to_eat;
 	int             simulation_stop;
 	pthread_mutex_t print_mutex;
-	pthread_mutex_t waiter_mutex;
 	bool            *forks_available;
 } t_simulation;
 

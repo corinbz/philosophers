@@ -6,47 +6,41 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 12:12:49 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 13:33:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-int ft_error(const char *err)
+int	ft_error(const char *err)
 {
 	write(2, err, ft_strlen(err));
 	return (1);
 }
 
-void cleanup_simulation(t_simulation *sim)
+void	cleanup_simulation(t_simulation *sim)
 {
-	int i;
+	int	i;
 
 	if (!sim)
-		return;
+		return ;
+	i = 0;
 
-	// Join all philosopher threads
-	for (i = 0; i < sim->num_philosophers; i++)
+	while (i < sim->num_philosophers)
 	{
 		if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
 			ft_error("Failed to join thread\n");
+		i++;
 	}
-
-	// Destroy all mutexes
-	for (i = 0; i < sim->num_philosophers; i++)
+	i = 0;
+	while (i < sim->num_philosophers)
 	{
-		// printf("i is %d\n",i);
 		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
 			ft_error("Failed to destroy fork mutex\n");
+		i++;
 	}
-
 	if (pthread_mutex_destroy(&sim->print_mutex) != 0)
 		ft_error("Failed to destroy print mutex\n");
-
-	if (pthread_mutex_destroy(&sim->waiter_mutex) != 0)
-		ft_error("Failed to destroy waiter mutex\n");
-
-	// Free allocated memory
 	free(sim->philosophers);
 	free(sim->forks);
 	free(sim->forks_available);
