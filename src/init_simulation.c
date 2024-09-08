@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 12:59:01 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:30:34 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 14:47:17 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ static void	init_philosophers(t_simulation *sim)
 		sim->philosophers[i].time_to_sleep = sim->time_to_sleep;
 		sim->philosophers[i].num_times_to_eat = sim->num_times_to_eat;
 		sim->philosophers[i].num_philosophers = sim->num_philosophers;
+		sim->philosophers[i].is_full = false;
 		i++;
 	}
 }
@@ -90,6 +91,7 @@ t_simulation	*init_simulation(int ac, char **av)
 		cleanup_simulation(sim);
 		return (ft_error("Failed to initialize mutexes\n"), NULL);
 	}
+	sim->simulation_stop = false;
 	init_philosophers(sim);
 	return (sim);
 }
