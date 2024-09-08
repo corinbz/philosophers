@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/10 14:40:04 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 12:12:49 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void cleanup_simulation(t_simulation *sim)
 	// Destroy all mutexes
 	for (i = 0; i < sim->num_philosophers; i++)
 	{
+		// printf("i is %d\n",i);
 		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
 			ft_error("Failed to destroy fork mutex\n");
 	}

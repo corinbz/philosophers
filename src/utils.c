@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:40:23 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/08/10 15:03:07 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 11:50:11 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,34 +14,34 @@
 
 static int ft_isspace(int c)
 {
-return (c == ' ' || c == '\t' || c == '\v' ||
- c == '\n' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\v' ||
+	c == '\n' || c == '\f' || c == '\r');
 }
 
 int ft_atoi(const char *str)
 {
-long int	result;
-int			sign;
+	long int	result;
+	int			sign;
 
- result = 0;
- sign = 1;
- while (ft_isspace(*str))
-  str++;
- if (*str == '-' || *str == '+')
- {
-  sign = (*str == '-') ? -1 : 1;
-  str++;
- }
- while (*str >= '0' && *str <= '9')
- {
-  result = result * 10 + (*str - '0');
-  if (result * sign > INT_MAX)
-   return (INT_MAX);
-  if (result * sign < INT_MIN)
-   return (INT_MIN);
-  str++;
- }
- return ((int)(result * sign));
+	result = 0;
+	sign = 1;
+	while (ft_isspace(*str))
+	str++;
+	if (*str == '-' || *str == '+')
+	{
+	sign = (*str == '-') ? -1 : 1;
+	str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+	result = result * 10 + (*str - '0');
+	if (result * sign > INT_MAX)
+		return (INT_MIN);
+	if (result * sign < INT_MIN)
+		return (INT_MIN);
+	str++;
+	}
+	return ((int)(result * sign));
 }
 
 int ft_isdigit(int c)

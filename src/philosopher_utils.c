@@ -11,30 +11,32 @@ void print_status(t_philosopher *philo, const char *status)
 }
 
 // Implement a hierarchical resource allocation strategy
-bool try_pickup_forks(t_philosopher *philo)
+bool	try_pickup_forks(t_philosopher *philo)
 {
-	int first_fork = (philo->id % 2 == 0) ? (philo->id - 1) : (philo->id % philo->num_philosophers);
-	int second_fork = (philo->id % 2 == 0) ? (philo->id % philo->num_philosophers) : (philo->id - 1);
-	// printf("first fork is %d\n",first_fork);
-	// printf("second fork is %d\n",second_fork);
-	if(first_fork == second_fork)
-		return (false);
+	int	left_fork;
+	int	right_fork;
 
-	pthread_mutex_lock(philo->waiter_mutex);
-	if (philo->forks_available[first_fork] && philo->forks_available[second_fork])
+	if (philo->id % 2 != 0)
+		left_fork = (philo->id - 1);
+	else
+		left_fork = philo->id % philo->num_philosophers;
+	if (philo->id % 2 != 0)
+		right_fork = philo->id % philo->num_philosophers;
+	else
+		right_fork = philo->id - 1;
+	pthread_mutex_lock(philo->left_fork);
+	print_status(philo, "has taken a fork");
+	if (left_fork == right_fork)
 	{
-		philo->forks_available[first_fork] = false;
-		philo->forks_available[second_fork] = false;
-		pthread_mutex_unlock(philo->waiter_mutex);
-
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo, "has taken a fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo, "has taken a fork");
-		return true;
+		ft_usleep(philo->time_to_die * 1000);
+		print_status(philo, "died");
+		*philo->simulation_stop = 1;
+		pthread_mutex_unlock(philo->left_fork);
+		return (false);
 	}
-	pthread_mutex_unlock(philo->waiter_mutex);
-	return false;
+	pthread_mutex_lock(philo->right_fork);
+	print_status(philo, "has taken a fork");
+	return (true);
 }
 
 int try_to_eat(t_philosopher *philo)
@@ -51,8 +53,6 @@ int try_to_eat(t_philosopher *philo)
 	if(philo->meals_eaten == philo->num_times_to_eat)
 		philo->is_full = true;
 	long long eat_end = get_current_time();
-	// printf("Debug: Philosopher %d ate for %lld ms (started at %lld, ended at %lld)\n",
-	// 		philo->id, eat_end - eat_start, eat_start, eat_end);
 	return 1;
 }
 void return_forks(t_philosopher *philo)
@@ -74,12 +74,12 @@ void *philosopher_routine(void *arg)
 
 	if (!philo)
 		return NULL;
-
-	//	Stagger	the	start	times	to	reduce	contention
-	// ft_usleep((philo->id % philo->num_philosophers) * 1000);
+	if(philo->id % 2 == 0)
+	{
+		ft_usleep(philo->time_to_eat * 1000 / 4);
+	}
 	while (!*philo->simulation_stop)
 	{
-		// printf("sim stop is %d\n",*philo->simulation_stop);
 		if (try_to_eat(philo))
 		{
 			if(philo->is_full)
@@ -88,7 +88,6 @@ void *philosopher_routine(void *arg)
 			ft_usleep(philo->time_to_sleep * 1000);
 			print_status(philo, "is thinking");
 		}
-		ft_usleep(1000); // Short delay before trying again
 	}
 	return NULL;
 }
