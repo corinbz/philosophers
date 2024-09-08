@@ -45,12 +45,10 @@ bool	try_pickup_forks(t_philosopher *philo)
 int	try_to_eat(t_philosopher *philo)
 {
 	long long	eat_start;
-	long long	eat_end;
 
-	eat_start = get_current_time();
 	if (!try_pickup_forks(philo))
 		return (0);
-
+	eat_start = get_current_time();
 	philo->last_meal_time = eat_start;
 	print_status(philo, "is eating");
 	ft_usleep(philo->time_to_eat * 1000);
@@ -58,7 +56,6 @@ int	try_to_eat(t_philosopher *philo)
 	return_forks(philo);
 	if (philo->meals_eaten == philo->num_times_to_eat)
 		philo->is_full = true;
-	eat_end = get_current_time();
 	return (1);
 }
 
