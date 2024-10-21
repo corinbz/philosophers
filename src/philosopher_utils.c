@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:19:11 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/21 09:56:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ bool	try_pickup_forks(t_philosopher *philo)
 	print_status(philo, "has taken a fork");
 	if (left_fork == right_fork)
 	{
-		printf("got here\n");
 		ft_usleep(philo->time_to_die * 1000);
 		print_status(philo, "died");
 		*philo->simulation_stop = 1;

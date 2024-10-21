@@ -6,12 +6,13 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:28:30 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:30:19 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/21 10:21:07 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
+// set all simulation parameters
 int	parse_arguments(t_simulation *sim, int ac, char **av)
 {
 	sim->num_philosophers = ft_atoi(av[1]);
@@ -30,6 +31,7 @@ int	parse_arguments(t_simulation *sim, int ac, char **av)
 	return (1);
 }
 
+// check if all values are digits
 bool	valid_args(char **av)
 {
 	int	i;

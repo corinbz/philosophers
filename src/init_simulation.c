@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/21 09:46:44 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/21 10:16:29 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,10 @@ static	void	init_philosophers(t_simulation	*sim)
 	}
 }
 
+/*
+Make some basic checks of the arguments and create the simulation data structure
+
+*/
 t_simulation	*init_simulation(int ac, char **av)
 {
 	t_simulation	*sim;

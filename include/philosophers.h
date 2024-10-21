@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:29:53 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/21 10:18:25 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,17 @@ typedef struct s_simulation
 }	t_simulation;
 
 // Initialization
+
 t_simulation	*init_simulation(int ac, char **av);
 int				parse_arguments(t_simulation *sim, int ac, char **av);
 
 // Simulation control
+
 int				start_simulation(t_simulation *sim);
 void			*monitor_simulation(void *arg);
 
 // Philosopher actions
+
 void			*philosopher_routine(void *arg);
 bool			try_pickup_forks(t_philosopher *philo);
 void			return_forks(t_philosopher *philo);
@@ -69,6 +72,7 @@ int				try_to_eat(t_philosopher *philo);
 void			print_status(t_philosopher *philo, const char *status);
 
 // Utility functions
+
 int				ft_atoi(const char *str);
 int				ft_isdigit(int s);
 void			*ft_calloc(size_t num_elements, size_t element_size);
@@ -77,10 +81,12 @@ int				ft_error(const char *err);
 bool			valid_args(char **av);
 
 // Time utilities
+
 void			ft_usleep(long long time);
 long long		get_current_time(void);
 
 // Cleanup
+
 void			cleanup_simulation(t_simulation *sim);
 
 #endif
