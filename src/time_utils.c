@@ -6,12 +6,13 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 13:17:50 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 13:28:24 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/21 10:48:15 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
+//More accurate usleep function
 void	ft_usleep(long long time)
 {
 	long long	start;
@@ -21,6 +22,7 @@ void	ft_usleep(long long time)
 		usleep(100);
 }
 
+//Gets current time in ms since 1 January 1970
 long long	get_current_time(void)
 {
 	struct timeval	tv;
