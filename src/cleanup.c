@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:18:05 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/09/08 15:04:51 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ int	ft_error(const char *err)
 	return (1);
 }
 
+/*
+Waits for all philosopher threads to finish, cleans the mutexes
+ and frees the allocated memory
+*/
 void	cleanup_simulation(t_simulation *sim)
 {
 	int	i;

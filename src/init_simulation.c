@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/03 12:59:01 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:47:17 by ccraciun         ###   ########.fr       */
+/*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
+/*   Updated: 2024/10/21 09:46:44 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-static int	allocate_resources(t_simulation *sim)
+static	int	allocate_resources(t_simulation	*sim)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ static int	allocate_resources(t_simulation *sim)
 	return (1);
 }
 
-static int	init_mutexes(t_simulation *sim)
+static	int	init_mutexes(t_simulation	*sim)
 {
 	int	i;
 
@@ -44,7 +44,7 @@ static int	init_mutexes(t_simulation *sim)
 	return (1);
 }
 
-static void	init_philosophers(t_simulation *sim)
+static	void	init_philosophers(t_simulation	*sim)
 {
 	int			i;
 	long long	start_time;
@@ -56,7 +56,7 @@ static void	init_philosophers(t_simulation *sim)
 		sim->philosophers[i].id = i + 1;
 		sim->philosophers[i].left_fork = &sim->forks[i];
 		sim->philosophers[i].right_fork = &sim->forks[(i + 1)
-			% sim->num_philosophers];
+			%sim->num_philosophers];
 		sim->philosophers[i].meals_eaten = 0;
 		sim->philosophers[i].last_meal_time = start_time;
 		sim->philosophers[i].simulation_stop = &sim->simulation_stop;

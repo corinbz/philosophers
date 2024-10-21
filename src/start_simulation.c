@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/08 12:27:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/09/08 14:23:40 by ccraciun         ###   ########.fr       */
+/*   Created: 2024/10/21 09:47:27 by ccraciun          #+#    #+#             */
+/*   Updated: 2024/10/21 09:50:51 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-static int	all_philosophers_full(t_simulation	*sim)
+static	int	all_philosophers_full(t_simulation	*sim)
 {
 	int	i;
 
@@ -37,14 +37,14 @@ int	start_simulation(t_simulation	*sim)
 				NULL, philosopher_routine, &sim->philosophers[i]) != 0)
 		{
 			sim->simulation_stop = 1;
-			return (ft_error("Failed to create philosopher thread\n"));
+			return (ft_error("Failed to create philosopher	thread\n"));
 		}
 		i++;
 	}
 	return (0);
 }
 
-static bool	check_philosopher_health(t_simulation *sim, int i)
+static	bool	check_philosopher_health(t_simulation *sim, int i)
 {
 	long long	current_time;
 	long long	ate_last;
@@ -62,7 +62,7 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 	return (true);
 }
 
-void	*monitor_simulation(void *arg)
+void	*monitor_simulation(void	*arg)
 {
 	t_simulation	*sim;
 	int				i;
