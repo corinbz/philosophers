@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 13:38:22 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 15:40:16 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_philosopher
 	int				right_fork_id;
 	int				meals_eaten;
 	long			last_meal_time;
-	int				*simulation_stop;
+	bool			*simulation_stop;
 	pthread_mutex_t	*print_mutex;
 	int				time_to_die;
 	int				time_to_eat;
@@ -54,7 +54,7 @@ typedef struct s_simulation
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_times_to_eat;
-	int				simulation_stop;
+	bool			simulation_stop;
 	pthread_mutex_t	print_mutex;
 	bool			*forks_available;
 }	t_simulation;
@@ -63,6 +63,7 @@ typedef struct s_simulation
 
 t_simulation	*init_simulation(int ac, char **av);
 int				parse_arguments(t_simulation *sim, int ac, char **av);
+int				init_mutexes(t_simulation *sim);
 
 // Simulation control
 
@@ -73,7 +74,6 @@ void			*monitor_simulation(void *arg);
 
 void			*philosopher_routine(void *arg);
 bool			try_pickup_forks(t_philosopher *philo);
-void			return_forks(t_philosopher *philo);
 int				try_to_eat(t_philosopher *philo);
 void			print_status(t_philosopher *philo, const char *status);
 

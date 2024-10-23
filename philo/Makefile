@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g -pthread #-fsanitize=thread
 
 OBJDIR = obj/
 
@@ -12,7 +12,8 @@ SRCS = check_arguments.c \
        philosopher_utils.c \
        start_simulation.c \
        time_utils.c \
-       utils.c
+       utils.c \
+       init_mutexes.c \
 
 # Colors
 GREEN = \033[1;32m

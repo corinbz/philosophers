@@ -1,0 +1,15 @@
+* put stuff in ./philo folder [done]
+* wildcard in makefile  [done]
+* free things if parse_arguments goes wrong [done]
+* destroy loop inside "init mutexes" upon fail? [done]
+* make time start at 0 [done]
+* make sure your philosophers actually sleep the correct duration,
+	and if someone dies in their sleep they should get out
+* assign the fork pointers during initialization [done]
+* get all succesfully created threads out properly if another thread failed to create [done]
+* make sure 1 philo only dies until he is actually starving [done]
+
+
+* fsanitize=thread to detect data races
+
+* once above is fixed, test with ./philo 3 700 200 100

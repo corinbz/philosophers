@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:47:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 14:36:28 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 16:12:32 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ static	int	all_philosophers_full(t_simulation	*sim)
 	return (1);
 }
 
-void set_starting_time(t_simulation *sim)
+void	set_starting_time(t_simulation *sim)
 {
-	int	i;
-	long start_time;
-	
+	int		i;
+	long	start_time;
+
 	i = 0;
 	start_time = get_current_time();
-	while(i < sim->num_philosophers)
+	while (i < sim->num_philosophers)
 	{
 		pthread_mutex_lock(sim->philosophers[i].time_zero_mut);
 		pthread_mutex_lock(sim->philosophers[i].last_meal_mut);
@@ -43,7 +43,6 @@ void set_starting_time(t_simulation *sim)
 		pthread_mutex_unlock(sim->philosophers[i].last_meal_mut);
 		i++;
 	}
-	
 }
 
 //create thread for each philo and runs the routine for each
@@ -85,8 +84,11 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 	{
 		pthread_mutex_lock(&sim->print_mutex);
 		pthread_mutex_lock(sim->philosophers[i].time_zero_mut);
-		printf("%lld %d died\n", current_time - sim->philosophers[i].time_zero, sim->philosophers[i].id);
-		sim->simulation_stop = true;
+		printf("%lld %d died\n", current_time - sim->philosophers[i].time_zero,
+			sim->philosophers[i].id);
+		pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+		*sim->philosophers[i].simulation_stop = true;
+		pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
 		pthread_mutex_unlock(sim->philosophers[i].time_zero_mut);
 		pthread_mutex_unlock(&sim->print_mutex);
 		return (false);
@@ -94,37 +96,52 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 	return (true);
 }
 
-//Main thread that constantly checks if philosophers ate x times or one of them
-//died
-void	*monitor_simulation(void	*arg)
+void *monitor_simulation(void *arg)
 {
-	t_simulation	*sim;
-	int				i;
+    t_simulation *sim = (t_simulation *)arg;
+    int i;
+    bool should_continue;
 
-	sim = (t_simulation *)arg;
-	i = 0;
-	while (true)
-	{
-		pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
-		if(!sim->simulation_stop)
-		{
-			pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
-			break;
-		}
-		if (all_philosophers_full(sim))
-		{
-			pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
-			sim->simulation_stop = true;
-			pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
-			return (NULL);
-		}
-		i = 0;
-		while (i < sim->num_philosophers)
-		{
-			if (!check_philosopher_health(sim, i))
-				return (NULL);
-			i++;
-		}
-	}
-	return (NULL);
+    if (!sim || !sim->philosophers)
+        return (NULL);
+    while (1)
+    {
+        i = 0;
+        while (i < sim->num_philosophers)
+        {
+            pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+            should_continue = !(*sim->philosophers[i].simulation_stop);
+            pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
+            
+            if (!should_continue)
+                return (NULL);
+                
+            if (all_philosophers_full(sim))
+            {
+                pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
+                *sim->philosophers[0].simulation_stop = true;
+                pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
+                pthread_mutex_lock(&sim->print_mutex);
+                printf("All philosophers have eaten enough times\n");
+                pthread_mutex_unlock(&sim->print_mutex);
+                return (NULL);
+            }
+            
+            if (!check_philosopher_health(sim, i))
+            {
+                pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
+                *sim->philosophers[0].simulation_stop = true;
+                pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
+                pthread_mutex_lock(&sim->print_mutex);
+                printf("%lld %d died\n", 
+                    get_current_time() - sim->philosophers[i].time_zero,
+                    sim->philosophers[i].id);
+                pthread_mutex_unlock(&sim->print_mutex);
+                return (NULL);
+            }
+            i++;
+        }
+        usleep(1000); // Small delay to prevent CPU hogging
+    }
+    return (NULL);
 }

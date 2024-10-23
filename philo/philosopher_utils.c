@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 14:42:34 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 16:03:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	print_status(t_philosopher *philo, const char *status)
 	if (!*(philo->simulation_stop))
 	{
 		current_time = get_current_time();
-		printf("%lld %d %s\n", (current_time - philo->time_zero), philo->id, status);
+		printf("%lld %d %s\n", (current_time - philo->time_zero),
+			philo->id, status);
 	}
 	pthread_mutex_unlock(philo->print_mutex);
 }
@@ -58,16 +59,27 @@ int	try_to_eat(t_philosopher *philo)
 	print_status(philo, "is eating");
 	ft_usleep(philo->time_to_eat * 1000);
 	philo->meals_eaten++;
-	return_forks(philo);
+	pthread_mutex_unlock(philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
 	if (philo->meals_eaten == philo->num_times_to_eat)
 		philo->is_full = true;
 	return (1);
 }
 
-void	return_forks(t_philosopher *philo)
+void	check_philo_ready(t_philosopher *philo)
 {
-	pthread_mutex_unlock(philo->right_fork);
-	pthread_mutex_unlock(philo->left_fork);
+	while (true)
+	{
+		pthread_mutex_lock(philo->time_zero_mut);
+		if (philo->time_zero == 0)
+		{
+			ft_usleep(100);
+			pthread_mutex_unlock(philo->time_zero_mut);
+			continue ;
+		}
+		pthread_mutex_unlock(philo->time_zero_mut);
+		break ;
+	}
 }
 
 void	*philosopher_routine(void *arg)
@@ -77,28 +89,17 @@ void	*philosopher_routine(void *arg)
 	philo = (t_philosopher *)arg;
 	if (!philo)
 		return (NULL);
-	while(true)
-	{
-		pthread_mutex_lock(philo->time_zero_mut);
-		if(philo->time_zero == 0)
-		{
-			ft_usleep(100);
-			pthread_mutex_unlock(philo->time_zero_mut);
-			continue;
-		}
-		pthread_mutex_unlock(philo->time_zero_mut);
-		break;
-	}
+	check_philo_ready(philo);
 	if (philo->id % 2 == 0)
 		ft_usleep(philo->time_to_eat * 1000 / 4);
 	while (!*philo->simulation_stop)
 	{
-		// pthread_mutex_lock(philo->sim_stop_mut);
-		// if(!*philo->simulation_stop)
-		// {
-		// 	pthread_mutex_unlock(philo->sim_stop_mut);
-		// 	return(NULL);
-		// }
+		pthread_mutex_lock(philo->sim_stop_mut);
+		if (*philo->simulation_stop)
+		{
+			pthread_mutex_unlock(philo->sim_stop_mut);
+			return (NULL);
+		}
 		if (try_to_eat(philo))
 		{
 			if (philo->is_full)
