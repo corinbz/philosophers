@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 10:22:52 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 13:38:22 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,18 @@
 
 typedef struct s_philosopher
 {
+	pthread_mutex_t	*time_zero_mut;
+	pthread_mutex_t	*last_meal_mut;
+	pthread_mutex_t	*sim_stop_mut;
+	long			time_zero;
 	int				id;
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	int				left_fork_id;
+	int				right_fork_id;
 	int				meals_eaten;
-	long long		last_meal_time;
+	long			last_meal_time;
 	int				*simulation_stop;
 	pthread_mutex_t	*print_mutex;
 	int				time_to_die;
@@ -89,5 +95,6 @@ long long		get_current_time(void);
 
 void			cleanup_simulation(t_simulation *sim);
 void			free_sim_memory(t_simulation *sim);
+int				clean_philo_threads(t_simulation *sim, int philos_num);
 
 #endif

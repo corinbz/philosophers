@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:28:30 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 09:48:23 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 10:46:27 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	parse_arguments(t_simulation *sim, int ac, char **av)
 		sim->num_times_to_eat = ft_atoi(av[5]);
 	else
 		sim->num_times_to_eat = -1;
-	sim->simulation_stop = 0;
+	sim->simulation_stop = false;
 	if (sim->num_philosophers <= 0 || sim->num_philosophers > 200
 		|| sim->time_to_die <= 0 || sim->time_to_eat <= 0
 		|| sim->time_to_sleep <= 0 || (ac == 6 && sim->num_times_to_eat <= 0))

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 10:22:17 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 13:40:42 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,19 @@ int	ft_error(const char *err)
 {
 	write(2, err, ft_strlen(err));
 	return (1);
+}
+
+int	clean_philo_threads(t_simulation *sim, int philos_num)
+{
+	int	i;
+
+	i = 0;
+	while (i < philos_num)
+	{
+		pthread_join(sim->philosophers[philos_num].thread, NULL);
+		i++;
+	}
+	return (ft_error("Failed to join create thread\n"));
 }
 
 void	free_sim_memory(t_simulation *sim)
@@ -48,12 +61,16 @@ void	cleanup_simulation(t_simulation *sim)
 	{
 		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
 			ft_error("Failed to destroy fork mutex\n");
+		if (pthread_mutex_destroy(sim->philosophers[i].time_zero_mut) != 0)
+			ft_error("Failed to destroy time_zero mutex\n");
+		if (pthread_mutex_destroy(sim->philosophers[i].last_meal_mut) != 0)
+			ft_error("Failed to destroy last_meal mutex\n");
+		free(sim->philosophers[i].last_meal_mut);
+		free(sim->philosophers[i].time_zero_mut);
+		free(sim->philosophers[i].sim_stop_mut);
 		i++;
 	}
 	if (pthread_mutex_destroy(&sim->print_mutex) != 0)
 		ft_error("Failed to destroy print mutex\n");
-	free(sim->philosophers);
-	free(sim->forks);
-	free(sim->forks_available);
-	free(sim);
+	free_sim_memory(sim);
 }
