@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 09:48:40 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 10:33:54 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,32 @@ static	int	allocate_resources(t_simulation	*sim)
 	}
 	return (1);
 }
-
+//init mutexes and cleans up accordingly if something fails
 static	int	init_mutexes(t_simulation	*sim)
 {
 	int	i;
 
 	i = 0;
 	if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
-		return (0);
+		return (free_sim_memory(sim), 1);
 	while (i < sim->num_philosophers)
 	{
 		if (pthread_mutex_init(&sim->forks[i], NULL) != 0)
-			return (0);
+		{
+			if (pthread_mutex_destroy(&sim->print_mutex) != 0)
+				ft_error("Failed to destroy print mutex\n");
+			while (i >= 0)
+			{
+				if (pthread_mutex_destroy(&sim->forks[i]) != 0)
+					ft_error("Failed to destroy fork mutex\n");
+				i--;
+			}
+			free_sim_memory(sim);
+			return (2);
+		}
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 static	void	init_philosophers(t_simulation	*sim)
@@ -78,6 +89,7 @@ Make some basic checks of the arguments and create the simulation data structure
 t_simulation	*init_simulation(int ac, char **av)
 {
 	t_simulation	*sim;
+	int				init_mutex;
 
 	if (ac != 5 && ac != 6)
 		return (ft_error("Invalid number of arguments\n"), NULL);
@@ -87,12 +99,15 @@ t_simulation	*init_simulation(int ac, char **av)
 	if (!sim)
 		return (ft_error("Memory allocation failed\n"), NULL);
 	if (!parse_arguments(sim, ac, av))
-		return (ft_error("Invalid argument values\n"), NULL);
+		return ((free(sim)), ft_error("Invalid argument values\n"), NULL);
 	if (!allocate_resources(sim))
 		return ((free(sim)), ft_error("Failed to allocate resources\n"), NULL);
-	if (!init_mutexes(sim))
+	init_mutex = init_mutexes(sim);
+	if (init_mutex > 0)
 	{
-		cleanup_simulation(sim);
+		// cleanup_simulation(sim);
+		if(init_mutex == 2)
+			return (ft_error("Failed to initialize mutexes\n"), NULL);
 		return (ft_error("Failed to initialize mutexes\n"), NULL);
 	}
 	sim->simulation_stop = false;

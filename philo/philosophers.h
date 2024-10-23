@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:14:11 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/21 10:18:25 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 10:22:52 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,6 @@ long long		get_current_time(void);
 // Cleanup
 
 void			cleanup_simulation(t_simulation *sim);
+void			free_sim_memory(t_simulation *sim);
 
 #endif

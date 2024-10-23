@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 09:48:35 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/23 10:22:17 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@ int	ft_error(const char *err)
 {
 	write(2, err, ft_strlen(err));
 	return (1);
+}
+
+void	free_sim_memory(t_simulation *sim)
+{
+	free(sim->philosophers);
+	free(sim->forks);
+	free(sim->forks_available);
+	free(sim);
 }
 
 /*
