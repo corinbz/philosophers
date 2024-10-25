@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:47:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 16:12:32 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:11:20 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 		printf("%lld %d died\n", current_time - sim->philosophers[i].time_zero,
 			sim->philosophers[i].id);
 		pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
-		*sim->philosophers[i].simulation_stop = true;
+		sim->simulation_stop = true;
 		pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
 		pthread_mutex_unlock(sim->philosophers[i].time_zero_mut);
 		pthread_mutex_unlock(&sim->print_mutex);
@@ -98,50 +98,44 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 
 void *monitor_simulation(void *arg)
 {
-    t_simulation *sim = (t_simulation *)arg;
-    int i;
-    bool should_continue;
+	t_simulation *sim = (t_simulation *)arg;
+	int i;
+	bool should_continue;
 
-    if (!sim || !sim->philosophers)
-        return (NULL);
-    while (1)
-    {
-        i = 0;
-        while (i < sim->num_philosophers)
-        {
-            pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
-            should_continue = !(*sim->philosophers[i].simulation_stop);
-            pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
-            
-            if (!should_continue)
-                return (NULL);
-                
-            if (all_philosophers_full(sim))
-            {
-                pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
-                *sim->philosophers[0].simulation_stop = true;
-                pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
-                pthread_mutex_lock(&sim->print_mutex);
-                printf("All philosophers have eaten enough times\n");
-                pthread_mutex_unlock(&sim->print_mutex);
-                return (NULL);
-            }
-            
-            if (!check_philosopher_health(sim, i))
-            {
-                pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
-                *sim->philosophers[0].simulation_stop = true;
-                pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
-                pthread_mutex_lock(&sim->print_mutex);
-                printf("%lld %d died\n", 
-                    get_current_time() - sim->philosophers[i].time_zero,
-                    sim->philosophers[i].id);
-                pthread_mutex_unlock(&sim->print_mutex);
-                return (NULL);
-            }
-            i++;
-        }
-        usleep(1000); // Small delay to prevent CPU hogging
-    }
-    return (NULL);
+	if (!sim || !sim->philosophers)
+		return (NULL);
+	while (1)
+	{
+		i = 0;
+		while (i < sim->num_philosophers)
+		{
+			pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+			should_continue = !sim->simulation_stop;
+			pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
+			if (!should_continue)
+				return (NULL);
+				
+			if (all_philosophers_full(sim))
+			{
+				pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+				*sim->philosophers[i].simulation_stop = true;
+				pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
+				pthread_mutex_lock(&sim->print_mutex);
+				printf("All philosophers have eaten enough times\n");
+				pthread_mutex_unlock(&sim->print_mutex);
+				return (NULL);
+			}
+			if (!check_philosopher_health(sim, i))
+			{
+				// pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+				// *sim->philosophers[0].simulation_stop = true;
+				// pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
+				print_status(&sim->philosophers[i], "died");
+				return (NULL);
+			}
+			i++;
+		}
+		usleep(1000); // Small delay to prevent CPU hogging
+	}
+	return (NULL);
 }

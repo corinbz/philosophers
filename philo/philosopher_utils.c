@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 16:03:53 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:12:47 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 void	print_status(t_philosopher *philo, const char *status)
 {
-	long long	current_time;
+	long	current_time;
 
 	pthread_mutex_lock(philo->print_mutex);
-	if (!*(philo->simulation_stop))
-	{
-		current_time = get_current_time();
-		printf("%lld %d %s\n", (current_time - philo->time_zero),
-			philo->id, status);
-	}
+	current_time = get_current_time();
+	printf("%ld %d %s\n", (current_time - philo->time_zero),
+		philo->id, status);
 	pthread_mutex_unlock(philo->print_mutex);
 }
 
@@ -31,18 +28,20 @@ bool	try_pickup_forks(t_philosopher *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	print_status(philo, "has taken a fork");
-	if (philo->left_fork_id == philo->right_fork_id)
-	{
-		ft_usleep(philo->time_to_die * 1000);
-		print_status(philo, "died");
-		pthread_mutex_lock(philo->sim_stop_mut);
-		*philo->simulation_stop = 1;
-		pthread_mutex_unlock(philo->sim_stop_mut);
-		pthread_mutex_unlock(philo->left_fork);
-		return (false);
-	}
+	// if (philo->left_fork_id == philo->right_fork_id)
+	// {
+	// 	ft_usleep(philo->time_to_die * 1000);
+	// 	print_status(philo, "died");
+	// 	pthread_mutex_lock(philo->sim_stop_mut);
+	// 	*philo->simulation_stop = 1;
+	// 	pthread_mutex_unlock(philo->sim_stop_mut);
+	// 	pthread_mutex_unlock(philo->left_fork);
+	// 	return (false);
+	// }
 	pthread_mutex_lock(philo->right_fork);
 	print_status(philo, "has taken a fork");
+	// pthread_mutex_unlock(philo->left_fork);
+	// pthread_mutex_unlock(philo->right_fork);
 	return (true);
 }
 
@@ -92,14 +91,15 @@ void	*philosopher_routine(void *arg)
 	check_philo_ready(philo);
 	if (philo->id % 2 == 0)
 		ft_usleep(philo->time_to_eat * 1000 / 4);
-	while (!*philo->simulation_stop)
+	while (true)
 	{
 		pthread_mutex_lock(philo->sim_stop_mut);
-		if (*philo->simulation_stop)
+		if (philo->simulation_stop)
 		{
 			pthread_mutex_unlock(philo->sim_stop_mut);
 			return (NULL);
 		}
+		pthread_mutex_unlock(philo->sim_stop_mut);
 		if (try_to_eat(philo))
 		{
 			if (philo->is_full)

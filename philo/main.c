@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 14:02:26 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 09:48:47 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:00:29 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int ac, char **av)
 		cleanup_simulation(sim);
 		return (ft_error("Failed to create monitor thread\n"));
 	}
-	start_simulation(sim);
+	// start_simulation(sim);
 	ret = pthread_join(monitor_thread, NULL);
 	if (ret != 0)
 		ft_error("Failed to join monitor thread\n");

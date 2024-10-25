@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 15:18:37 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/10/25 14:10:15 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,15 @@ void	set_fork_ids(t_simulation *sim, int i)
 			% sim->philosophers[i].num_philosophers;
 	else
 		sim->philosophers[i].right_fork_id = sim->philosophers[i].id - 1;
+	if (sim->philosophers[i].left_fork_id == sim->philosophers[i].right_fork_id)
+	{
+		ft_usleep(sim->time_to_die * 1000);
+		print_status(&sim->philosophers[i], "died");
+		pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
+		sim->simulation_stop = true;
+		pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
+		pthread_mutex_unlock(sim->philosophers[i].left_fork);
+	}
 }
 
 static	void	init_philosophers(t_simulation	*sim)
@@ -66,6 +75,7 @@ static	void	init_philosophers(t_simulation	*sim)
 		sim->philosophers[i].num_philosophers = sim->num_philosophers;
 		sim->philosophers[i].is_full = false;
 		sim->philosophers[i].time_zero = 0;
+		start_simulation(sim);
 		set_fork_ids(sim, i);
 		i++;
 	}
