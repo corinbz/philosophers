@@ -35,15 +35,15 @@ static bool	handle_single_philosopher(t_philosopher *philo)
 static void	setup_fork_order(t_philosopher *philo,
 	pthread_mutex_t **first, pthread_mutex_t **second)
 {
-	if (philo->id % 2 == 0)
-	{
-		*first = philo->right_fork;
-		*second = philo->left_fork;
-	}
-	else
+	if (philo->left_fork_id < philo->right_fork_id)
 	{
 		*first = philo->left_fork;
 		*second = philo->right_fork;
+	}
+	else
+	{
+		*first = philo->right_fork;
+		*second = philo->left_fork;
 	}
 }
 

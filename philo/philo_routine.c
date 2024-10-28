@@ -40,10 +40,10 @@ static void	handle_initial_delay(t_philosopher *philo)
 	if (philo->num_philosophers > 100)
 	{
 		group = philo->id % 4;
-		ft_usleep(50 * group);
+		ft_usleep(1000 * group);
 	}
 	else if (philo->id % 2 == 0)
-		ft_usleep(50);
+		ft_usleep(1000);
 }
 
 /*
