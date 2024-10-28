@@ -38,17 +38,17 @@ void	print_status(t_philosopher *philo, const char *status)
 ** @param philo: Pointer to philosopher structure
 ** @return: true if philosopher should die, false otherwise
 */
-bool	check_death_time(t_philosopher *philo)
-{
-	long	current_time;
-	long	last_meal;
+// bool	check_death_time(t_philosopher *philo)
+// {
+// 	long	current_time;
+// 	long	last_meal;
 
-	pthread_mutex_lock(philo->last_meal_mut);
-	current_time = get_current_time();
-	last_meal = current_time - philo->last_meal_time;
-	pthread_mutex_unlock(philo->last_meal_mut);
-	return (last_meal >= philo->time_to_die);
-}
+// 	pthread_mutex_lock(philo->last_meal_mut);
+// 	current_time = get_current_time();
+// 	last_meal = current_time - philo->last_meal_time;
+// 	pthread_mutex_unlock(philo->last_meal_mut);
+// 	return (last_meal >= philo->time_to_die);
+// }
 
 /*
 ** Updates philosopher's meal count and full status

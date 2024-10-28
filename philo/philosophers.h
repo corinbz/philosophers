@@ -88,9 +88,8 @@ void			update_meal_status(t_philosopher *philo);
 
 /* Status checking and printing */
 void			print_status(t_philosopher *philo, const char *status);
-bool			check_death_time(t_philosopher *philo);
+// bool			check_death_time(t_philosopher *philo);
 bool			check_philosopher_full(t_philosopher *philo);
-// long			get_last_meal_time(t_philosopher *philo);
 bool			check_all_philosophers_full(t_simulation *sim);
 
 /* Cleanup functions */

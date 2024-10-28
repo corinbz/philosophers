@@ -72,8 +72,6 @@ static int	handle_philosopher_actions(t_philosopher *philo)
 
 	if (!try_to_eat(philo))
 	{
-		if (check_death_time(philo))
-			return (0);
 		ft_usleep(100);
 		return (1);
 	}
