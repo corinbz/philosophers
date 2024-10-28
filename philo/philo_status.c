@@ -21,6 +21,8 @@ void	print_status(t_philosopher *philo, const char *status)
 {
 	long	current_time;
 
+	if (check_simulation_stop(philo))
+		return ;
 	pthread_mutex_lock(philo->print_mutex);
 	if (!check_simulation_stop(philo))
 	{
@@ -40,18 +42,12 @@ bool	check_death_time(t_philosopher *philo)
 {
 	long	current_time;
 	long	last_meal;
-	int		time_margin;
 
 	pthread_mutex_lock(philo->last_meal_mut);
 	current_time = get_current_time();
 	last_meal = current_time - philo->last_meal_time;
 	pthread_mutex_unlock(philo->last_meal_mut);
-	time_margin = philo->time_to_die / 10;
-	if (time_margin < 10)
-		time_margin = 10;
-	else if (time_margin > 100)
-		time_margin = 100;
-	return (last_meal > (philo->time_to_die - time_margin));
+	return (last_meal >= philo->time_to_die);
 }
 
 /*

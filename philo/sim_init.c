@@ -119,13 +119,13 @@ t_simulation	*init_simulation(int ac, char **av)
 		return (free(sim), ft_error("Failed to allocate resources\n"), NULL);
 	init_mutex = init_mutexes(sim);
 	if (init_mutex > 0)
-		return (free(sim), ft_error("Failed to initialize mutexes\n"), NULL);
+		return (destroy_mutexes_up_to(sim, init_mutex - 1),
+			free_sim_memory(sim),
+			ft_error("Failed to initialize mutexes\n"), NULL);
 	init_philosophers(sim);
 	if (start_simulation(sim) != 0)
-	{
-		cleanup_simulation(sim);
-		return (ft_error("Failed to start simulation\n"), NULL);
-	}
+		return (cleanup_simulation(sim), ft_error("Failed to start sim\n"),
+			NULL);
 	return (sim);
 }
 
