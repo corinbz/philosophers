@@ -12,87 +12,79 @@
 
 #include "philosophers.h"
 
-int    ft_error(const char *err)
+int	ft_error(const char *err)
 {
-    ssize_t result;
-
-    result = write(2, err, ft_strlen(err));
-    (void)result;  // Suppress unused variable warning while still checking return
-    return (1);
+	write(2, err, ft_strlen(err));
+	return (1);
 }
 
-int    clean_philo_threads(t_simulation *sim, int philos_num)
+int	clean_philo_threads(t_simulation *sim, int philos_num)
 {
-    int    i;
-    int    status;
+	int	i;
+	int	status;
 
-    i = 0;
-    status = 0;
-    while (i < philos_num)
-    {
-        if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
-            status = 1;
-        i++;
-    }
-    return (status ? ft_error("Failed to join threads\n") : 0);
+	i = 0;
+	status = 0;
+	while (i < philos_num)
+	{
+		if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
+			status = 1;
+		i++;
+	}
+	if (status)
+		return (ft_error("Failed to join threads\n"));
+	return (0);
 }
 
-void    free_sim_memory(t_simulation *sim)
+void	free_sim_memory(t_simulation *sim)
 {
-    if (!sim)
-        return ;
-    if (sim->philosophers)
-        free(sim->philosophers);
-    if (sim->forks)
-        free(sim->forks);
-    if (sim->forks_available)
-        free(sim->forks_available);
-    free(sim);
+	if (!sim)
+		return ;
+	if (sim->philosophers)
+		free(sim->philosophers);
+	if (sim->forks)
+		free(sim->forks);
+	if (sim->forks_available)
+		free(sim->forks_available);
+	free(sim);
 }
 
-void    cleanup_simulation(t_simulation *sim)
+void	cleanup_simulation(t_simulation *sim)
 {
-    int i;
+	int	i;
 
-    if (!sim)
-        return;
-
-    // Signal all threads to stop
-    pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
-    sim->simulation_stop = true;
-    pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
-
-    // Wait for all philosophers to finish
-    i = 0;
-    while (i < sim->num_philosophers)
-    {
-        pthread_join(sim->philosophers[i].thread, NULL);
-        i++;
-    }
-
-    // Destroy mutexes
-    i = 0;
-    while (i < sim->num_philosophers)
-    {
-        pthread_mutex_destroy(&sim->forks[i]);
-        if (sim->philosophers[i].time_zero_mut)
-        {
-            pthread_mutex_destroy(sim->philosophers[i].time_zero_mut);
-            free(sim->philosophers[i].time_zero_mut);
-        }
-        if (sim->philosophers[i].last_meal_mut)
-        {
-            pthread_mutex_destroy(sim->philosophers[i].last_meal_mut);
-            free(sim->philosophers[i].last_meal_mut);
-        }
-        if (sim->philosophers[i].sim_stop_mut)
-        {
-            pthread_mutex_destroy(sim->philosophers[i].sim_stop_mut);
-            free(sim->philosophers[i].sim_stop_mut);
-        }
-        i++;
-    }
-
-    pthread_mutex_destroy(&sim->print_mutex);
-    free_sim_memory(sim);
+	if (!sim)
+		return ;
+	pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
+	sim->simulation_stop = true;
+	pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		pthread_join(sim->philosophers[i].thread, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < sim->num_philosophers)
+	{
+		pthread_mutex_destroy(&sim->forks[i]);
+		if (sim->philosophers[i].time_zero_mut)
+		{
+			pthread_mutex_destroy(sim->philosophers[i].time_zero_mut);
+			free(sim->philosophers[i].time_zero_mut);
+		}
+		if (sim->philosophers[i].last_meal_mut)
+		{
+			pthread_mutex_destroy(sim->philosophers[i].last_meal_mut);
+			free(sim->philosophers[i].last_meal_mut);
+		}
+		if (sim->philosophers[i].sim_stop_mut)
+		{
+			pthread_mutex_destroy(sim->philosophers[i].sim_stop_mut);
+			free(sim->philosophers[i].sim_stop_mut);
+		}
+		i++;
+	}
+	pthread_mutex_destroy(&sim->print_mutex);
+	free_sim_memory(sim);
 }
