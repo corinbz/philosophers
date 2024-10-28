@@ -12,72 +12,87 @@
 
 #include "philosophers.h"
 
-int	ft_error(const char *err)
+int    ft_error(const char *err)
 {
-	write(2, err, ft_strlen(err));
-	return (1);
+    ssize_t result;
+
+    result = write(2, err, ft_strlen(err));
+    (void)result;  // Suppress unused variable warning while still checking return
+    return (1);
 }
 
-int	clean_philo_threads(t_simulation *sim, int philos_num)
+int    clean_philo_threads(t_simulation *sim, int philos_num)
 {
-	int	i;
+    int    i;
+    int    status;
 
-	i = 0;
-	while (i < philos_num)
-	{
-		pthread_join(sim->philosophers[philos_num].thread, NULL);
-		i++;
-	}
-	return (ft_error("Failed to join create thread\n"));
+    i = 0;
+    status = 0;
+    while (i < philos_num)
+    {
+        if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
+            status = 1;
+        i++;
+    }
+    return (status ? ft_error("Failed to join threads\n") : 0);
 }
 
-void	free_sim_memory(t_simulation *sim)
+void    free_sim_memory(t_simulation *sim)
 {
-	free(sim->philosophers);
-	free(sim->forks);
-	free(sim->forks_available);
-	free(sim);
+    if (!sim)
+        return ;
+    if (sim->philosophers)
+        free(sim->philosophers);
+    if (sim->forks)
+        free(sim->forks);
+    if (sim->forks_available)
+        free(sim->forks_available);
+    free(sim);
 }
 
-void	join_philo_thread(t_simulation *sim)
+void    cleanup_simulation(t_simulation *sim)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i < sim->num_philosophers)
-	{
-		if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
-			ft_error("Failed to join thread\n");
-		i++;
-	}
-}
+    if (!sim)
+        return;
 
-/*
-Waits for all philosopher threads to finish, cleans the mutexes
- and frees the allocated memory
-*/
-void	cleanup_simulation(t_simulation *sim)
-{
-	int	i;
+    // Signal all threads to stop
+    pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
+    sim->simulation_stop = true;
+    pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
 
-	if (!sim)
-		return ;
-	i = 0;
-	join_philo_thread(sim);
-	while (i < sim->num_philosophers)
-	{
-		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
-			ft_error("Failed to destroy fork mutex\n");
-		if (pthread_mutex_destroy(sim->philosophers[i].time_zero_mut) != 0)
-			ft_error("Failed to destroy time_zero mutex\n");
-		if (pthread_mutex_destroy(sim->philosophers[i].last_meal_mut) != 0)
-			ft_error("Failed to destroy last_meal mutex\n");
-		free(sim->philosophers[i].last_meal_mut);
-		free(sim->philosophers[i].time_zero_mut);
-		free(sim->philosophers[i].sim_stop_mut);
-		i++;
-	}
-	if (pthread_mutex_destroy(&sim->print_mutex) != 0)
-		ft_error("Failed to destroy print mutex\n");
-	free_sim_memory(sim);
+    // Wait for all philosophers to finish
+    i = 0;
+    while (i < sim->num_philosophers)
+    {
+        pthread_join(sim->philosophers[i].thread, NULL);
+        i++;
+    }
+
+    // Destroy mutexes
+    i = 0;
+    while (i < sim->num_philosophers)
+    {
+        pthread_mutex_destroy(&sim->forks[i]);
+        if (sim->philosophers[i].time_zero_mut)
+        {
+            pthread_mutex_destroy(sim->philosophers[i].time_zero_mut);
+            free(sim->philosophers[i].time_zero_mut);
+        }
+        if (sim->philosophers[i].last_meal_mut)
+        {
+            pthread_mutex_destroy(sim->philosophers[i].last_meal_mut);
+            free(sim->philosophers[i].last_meal_mut);
+        }
+        if (sim->philosophers[i].sim_stop_mut)
+        {
+            pthread_mutex_destroy(sim->philosophers[i].sim_stop_mut);
+            free(sim->philosophers[i].sim_stop_mut);
+        }
+        i++;
+    }
+
+    pthread_mutex_destroy(&sim->print_mutex);
+    free_sim_memory(sim);
 }
