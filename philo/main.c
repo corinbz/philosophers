@@ -12,6 +12,12 @@
 
 #include "philosophers.h"
 
+/*
+** Program entry point
+** @param ac: Argument count
+** @param av: Argument values
+** @return: 0 on success, non-zero on error
+*/
 int	main(int ac, char **av)
 {
 	t_simulation	*sim;

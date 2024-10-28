@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_arguments.c                                  :+:      :+:    :+:   */
+/*   utils_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,24 @@
 
 #include "philosophers.h"
 
-// set all simulation parameters
+/*
+** Checks if a character is a whitespace character
+** @param c: Character to check
+** @return: 1 if whitespace, 0 otherwise
+*/
+static int	ft_isspace(int c)
+{
+	return (c == ' ' || c == '\t' || c == '\v'
+		|| c == '\n' || c == '\f' || c == '\r');
+}
+
+/*
+** Validates and parses command line arguments
+** @param sim: Pointer to simulation structure
+** @param ac: Argument count
+** @param av: Argument values
+** @return: 1 on success, 0 on failure
+*/
 int	parse_arguments(t_simulation *sim, int ac, char **av)
 {
 	sim->num_philosophers = ft_atoi(av[1]);
@@ -31,7 +48,11 @@ int	parse_arguments(t_simulation *sim, int ac, char **av)
 	return (1);
 }
 
-// check if all values are digits
+/*
+** Validates that all command line arguments are digits
+** @param av: Array of argument strings
+** @return: true if all arguments are valid digits, false otherwise
+*/
 bool	valid_args(char **av)
 {
 	int	i;
@@ -50,4 +71,46 @@ bool	valid_args(char **av)
 		i++;
 	}
 	return (true);
+}
+
+/*
+** Converts a string to an integer, handling whitespace and signs
+** @param str: String to convert
+** @return: Converted integer value or INT_MIN on overflow
+*/
+int	ft_atoi(const char *str)
+{
+	long int	result;
+	int			sign;
+
+	result = 0;
+	sign = 1;
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - '0');
+		if (result * sign > INT_MAX)
+			return (INT_MIN);
+		if (result * sign < INT_MIN)
+			return (INT_MIN);
+		str++;
+	}
+	return ((int)(result * sign));
+}
+
+/*
+** Checks if a character is a digit
+** @param c: Character to check
+** @return: 1 if digit, 0 otherwise
+*/
+int	ft_isdigit(int c)
+{
+	return (c >= '0' && c <= '9');
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_memory.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,44 +12,12 @@
 
 #include "philosophers.h"
 
-static int	ft_isspace(int c)
-{
-	return (c == ' ' || c == '\t' || c == '\v'
-		|| c == '\n' || c == '\f' || c == '\r');
-}
-
-int	ft_atoi(const char *str)
-{
-	long int	result;
-	int			sign;
-
-	result = 0;
-	sign = 1;
-	while (ft_isspace(*str))
-		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			sign = -1;
-		str++;
-	}
-	while (*str >= '0' && *str <= '9')
-	{
-		result = result * 10 + (*str - '0');
-		if (result * sign > INT_MAX)
-			return (INT_MIN);
-		if (result * sign < INT_MIN)
-			return (INT_MIN);
-		str++;
-	}
-	return ((int)(result * sign));
-}
-
-int	ft_isdigit(int c)
-{
-	return (c >= '0' && c <= '9');
-}
-
+/*
+** Allocates zeroed memory for an array
+** @param num_elements: Number of elements to allocate
+** @param element_size: Size of each element
+** @return: Pointer to allocated memory or NULL on failure
+*/
 void	*ft_calloc(size_t num_elements, size_t element_size)
 {
 	void			*result;
@@ -68,6 +36,11 @@ void	*ft_calloc(size_t num_elements, size_t element_size)
 	return (result);
 }
 
+/*
+** Calculates the length of a string
+** @param str: String to measure
+** @return: Length of the string
+*/
 size_t	ft_strlen(const char *str)
 {
 	const char	*s;

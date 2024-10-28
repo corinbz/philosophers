@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time_utils.c                                       :+:      :+:    :+:   */
+/*   utils_time.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,6 +12,10 @@
 
 #include "philosophers.h"
 
+/*
+** Custom sleep function using busy waiting
+** @param microseconds: Time to sleep in microseconds
+*/
 void	ft_usleep(long microseconds)
 {
 	long	start;
@@ -23,6 +27,10 @@ void	ft_usleep(long microseconds)
 		usleep(100);
 }
 
+/*
+** Gets current time in milliseconds
+** @return: Current time in milliseconds
+*/
 long	get_current_time(void)
 {
 	struct timeval	tv;

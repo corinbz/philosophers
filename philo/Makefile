@@ -1,20 +1,24 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g -pthread #-fsanitize=thread
 
 OBJDIR = obj/
 
-SRCS = check_arguments.c \
-       cleanup.c \
-       init_structures.c \
-       main.c \
-       philosopher_utils.c \
-       start_simulation.c \
-       time_utils.c \
-       utils.c \
-       init_mutexes.c \
-
+SRCS		= main.c \
+			sim_init.c \
+			sim_mutex.c \
+			sim_monitor.c \
+			philo_init.c \
+			philo_status_check.c \
+			philo_actions.c \
+			philo_routine.c \
+			philo_status.c \
+			utils_time.c \
+			utils_input.c \
+			utils_memory.c \
+			cleanup.c \
+			cleanup_mutex.c \
 # Colors
 GREEN = \033[1;32m
 BLUE = \033[1;36m

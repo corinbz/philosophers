@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_mutexes.c                                     :+:      :+:    :+:   */
+/*   sim_mutex.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,6 +12,11 @@
 
 #include "philosophers.h"
 
+/*
+** Initializes mutexes for a single philosopher
+** @param philosopher: Pointer to philosopher structure
+** @return: 0 on success, 1 on failure
+*/
 static int	init_philosopher_mutexes(t_philosopher *philosopher)
 {
 	philosopher->time_zero_mut = ft_calloc(1, sizeof(pthread_mutex_t));
@@ -38,30 +43,13 @@ static int	init_philosopher_mutexes(t_philosopher *philosopher)
 	return (0);
 }
 
-static int	destroy_philosopher_mutexes(t_philosopher *philosopher)
-{
-	int	status;
-
-	status = 0;
-	if (pthread_mutex_destroy(philosopher->time_zero_mut) != 0)
-	{
-		ft_error("Failed to destroy time_zero mutex\n");
-		status = 1;
-	}
-	if (pthread_mutex_destroy(philosopher->last_meal_mut) != 0)
-	{
-		ft_error("Failed to destroy last_meal mutex\n");
-		status = 1;
-	}
-	if (pthread_mutex_destroy(philosopher->sim_stop_mut) != 0)
-	{
-		ft_error("Failed to destroy sim_stop mutex\n");
-		status = 1;
-	}
-	return (status);
-}
-
-static int	destroy_mutexes_up_to(t_simulation *sim, int index)
+/*
+** Destroys mutexes for cleanup during initialization error
+** @param sim: Pointer to simulation structure
+** @param index: Maximum index to process
+** @return: 0 on success, 1 on failure
+*/
+static int	destroy_init_mutexes(t_simulation *sim, int index)
 {
 	int	status;
 	int	i;
@@ -87,6 +75,11 @@ static int	destroy_mutexes_up_to(t_simulation *sim, int index)
 	return (status);
 }
 
+/*
+** Initializes all mutexes for the simulation
+** @param sim: Pointer to simulation structure
+** @return: 0 on success, 1 or 2 on failure
+*/
 int	init_mutexes(t_simulation *sim)
 {
 	int	i;
@@ -98,14 +91,14 @@ int	init_mutexes(t_simulation *sim)
 	{
 		if (init_philosopher_mutexes(&sim->philosophers[i]) != 0)
 		{
-			destroy_mutexes_up_to(sim, i - 1);
+			destroy_init_mutexes(sim, i - 1);
 			free_sim_memory(sim);
 			return (2);
 		}
 		if (pthread_mutex_init(&sim->forks[i], NULL) != 0)
 		{
 			ft_error("Failed to init fork mutex\n");
-			destroy_mutexes_up_to(sim, i);
+			destroy_init_mutexes(sim, i);
 			free_sim_memory(sim);
 			return (2);
 		}
