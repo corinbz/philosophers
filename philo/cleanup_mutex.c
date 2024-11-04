@@ -60,15 +60,20 @@ static int	destroy_all_philosopher_mutexes(t_simulation *sim, int num_philos)
 }
 
 /*
-** Destroys print mutex
+** Destroys print and time_zero_mut mutexes
 ** @param sim: Pointer to simulation structure
 ** @return: 0 on success, 1 on failure
 */
-static int	destroy_print_mutex(t_simulation *sim)
+static int	destroy_general_mutexes(t_simulation *sim)
 {
 	if (pthread_mutex_destroy(&sim->print_mutex) != 0)
 	{
 		ft_error("Failed to destroy print mutex\n");
+		return (1);
+	}
+	if (pthread_mutex_destroy(&sim->time_zero_mut) != 0)
+	{
+		ft_error("Failed to destroy time_zero_mut mutex\n");
 		return (1);
 	}
 	return (0);
@@ -84,7 +89,7 @@ int	cleanup_mutexes(t_simulation *sim)
 	int	status;
 
 	status = 0;
-	if (destroy_print_mutex(sim) != 0)
+	if (destroy_general_mutexes(sim) != 0)
 		status = 1;
 	if (destroy_fork_mutexes(sim, sim->num_philosophers) != 0)
 		status = 1;
@@ -104,7 +109,7 @@ int	destroy_mutexes_up_to(t_simulation *sim, int index)
 	int	status;
 
 	status = 0;
-	if (destroy_print_mutex(sim) != 0)
+	if (destroy_general_mutexes(sim) != 0)
 		status = 1;
 	if (destroy_fork_mutexes(sim, index) != 0)
 		status = 1;

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 15:10:39 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/01 12:09:41 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,16 @@ void	free_sim_memory(t_simulation *sim)
 {
 	if (!sim)
 		return ;
-	if (sim->philosophers)
-		free(sim->philosophers);
 	if (sim->forks)
+	{
 		free(sim->forks);
+		sim->forks = NULL;
+	}
+	if (sim->philosophers)
+	{
+		free(sim->philosophers);
+		sim->philosophers = NULL;
+	}
 	free(sim);
 }
 
@@ -72,20 +78,12 @@ int	destroy_philosopher_mutexes(t_philosopher *philo)
 	int	status;
 
 	status = 0;
-	if (philo->time_zero_mut)
-	{
-		pthread_mutex_destroy(philo->time_zero_mut);
-		free(philo->time_zero_mut);
-	}
 	if (philo->last_meal_mut)
 	{
-		pthread_mutex_destroy(philo->last_meal_mut);
+		if (pthread_mutex_destroy(philo->last_meal_mut) != 0)
+			status = 1;
 		free(philo->last_meal_mut);
-	}
-	if (philo->sim_stop_mut)
-	{
-		pthread_mutex_destroy(philo->sim_stop_mut);
-		free(philo->sim_stop_mut);
+		philo->last_meal_mut = NULL;
 	}
 	return (status);
 }
@@ -100,15 +98,20 @@ void	cleanup_simulation(t_simulation *sim)
 
 	if (!sim)
 		return ;
-	pthread_mutex_lock(sim->philosophers[0].sim_stop_mut);
+	pthread_mutex_lock(&sim->sim_stop_mut);
 	sim->simulation_stop = true;
-	pthread_mutex_unlock(sim->philosophers[0].sim_stop_mut);
+	pthread_mutex_unlock(&sim->sim_stop_mut);
 	i = 0;
-	while (i < sim->num_philosophers)
+	if (sim->philosophers)
 	{
-		pthread_join(sim->philosophers[i].thread, NULL);
-		i++;
+		while (i < sim->num_philosophers)
+		{
+			if (pthread_join(sim->philosophers[i].thread, NULL) != 0)
+				ft_error("Failed to join philosopher thread\n");
+			i++;
+		}
 	}
-	cleanup_mutexes(sim);
+	if (cleanup_mutexes(sim) != 0)
+		ft_error("Warning: Some mutexes failed to cleanup\n");
 	free_sim_memory(sim);
 }

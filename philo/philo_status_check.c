@@ -17,7 +17,7 @@
 ** @param philo: Pointer to philosopher structure
 ** @return: true if philosopher is full, false otherwise
 */
-static bool	is_philosopher_full(t_philosopher *philo)
+bool	is_philosopher_full(t_philosopher *philo)
 {
 	bool	full_status;
 

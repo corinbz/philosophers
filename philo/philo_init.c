@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/25 14:10:15 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/01 11:10:32 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static void	init_philosopher_basic(t_philosopher *philo, int id,
 	philo->meals_eaten = 0;
 	philo->simulation_stop = &sim->simulation_stop;
 	philo->print_mutex = &sim->print_mutex;
+	philo->sim_stop_mut = &sim->sim_stop_mut;
+	philo->time_zero_mut = &sim->time_zero_mut;
 	philo->is_full = false;
 	philo->time_zero = 0;
 }

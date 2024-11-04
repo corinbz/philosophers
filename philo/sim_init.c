@@ -42,9 +42,9 @@ void	set_starting_time(t_simulation *sim)
 
 	start_time = get_current_time();
 	i = 0;
+	pthread_mutex_lock(&sim->time_zero_mut);
 	while (i < sim->num_philosophers)
 	{
-		pthread_mutex_lock(sim->philosophers[i].time_zero_mut);
 		pthread_mutex_lock(sim->philosophers[i].last_meal_mut);
 		i++;
 	}
@@ -59,9 +59,9 @@ void	set_starting_time(t_simulation *sim)
 	while (i >= 0)
 	{
 		pthread_mutex_unlock(sim->philosophers[i].last_meal_mut);
-		pthread_mutex_unlock(sim->philosophers[i].time_zero_mut);
 		i--;
 	}
+	pthread_mutex_unlock(&sim->time_zero_mut);
 }
 
 /*

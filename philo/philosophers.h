@@ -66,6 +66,8 @@ struct s_simulation
 	int				num_times_to_eat;
 	bool			simulation_stop;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	sim_stop_mut;
+	pthread_mutex_t	time_zero_mut;
 };
 
 /* Core simulation functions */
@@ -85,6 +87,7 @@ bool			check_simulation_stop(t_philosopher *philo);
 bool			try_pickup_forks(t_philosopher *philo);
 int				try_to_eat(t_philosopher *philo);
 void			update_meal_status(t_philosopher *philo);
+bool			is_philosopher_full(t_philosopher *philo);
 
 /* Status checking and printing */
 void			print_status(t_philosopher *philo, const char *status);

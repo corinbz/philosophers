@@ -16,16 +16,19 @@
 ** Waits for simulation start time to be set
 ** @param philo: Pointer to philosopher structure
 */
-static void	wait_for_start(t_philosopher *philo)
+static void wait_for_start(t_philosopher *philo)
 {
-	pthread_mutex_lock(philo->time_zero_mut);
-	while (philo->time_zero == 0)
+	while (1)
 	{
-		pthread_mutex_unlock(philo->time_zero_mut);
-		ft_usleep(100);
 		pthread_mutex_lock(philo->time_zero_mut);
+		if (philo->time_zero != 0)
+		{
+			pthread_mutex_unlock(philo->time_zero_mut);
+			break;
+		}
+		pthread_mutex_unlock(philo->time_zero_mut);
+		usleep(100);
 	}
-	pthread_mutex_unlock(philo->time_zero_mut);
 }
 
 /*
@@ -40,10 +43,12 @@ static void	handle_initial_delay(t_philosopher *philo)
 	if (philo->num_philosophers > 100)
 	{
 		group = philo->id % 4;
-		ft_usleep(1000 * group);
+		ft_usleep(100 * group);
 	}
 	else if (philo->id % 2 == 0)
 		ft_usleep(1000);
+	else
+		ft_usleep((philo->id * 10) * 1000);
 }
 
 /*
@@ -68,22 +73,17 @@ bool	check_simulation_stop(t_philosopher *philo)
 */
 static int	handle_philosopher_actions(t_philosopher *philo)
 {
-	bool	is_full;
-
 	if (!try_to_eat(philo))
 	{
-		ft_usleep(100);
+		ft_usleep((philo->time_to_eat / 10) * 1000);
 		return (1);
 	}
-	pthread_mutex_lock(philo->last_meal_mut);
-	is_full = philo->is_full;
-	pthread_mutex_unlock(philo->last_meal_mut);
-	if (is_full)
+	if (is_philosopher_full(philo))
 		return (0);
 	print_status(philo, "is sleeping");
 	ft_usleep(philo->time_to_sleep * 1000);
-	if (!check_simulation_stop(philo))
-		print_status(philo, "is thinking");
+	print_status(philo, "is thinking");
+	ft_usleep((philo->time_to_eat / 4) * 1000);
 	return (1);
 }
 
@@ -105,6 +105,7 @@ void	*philosopher_routine(void *arg)
 	{
 		if (!handle_philosopher_actions(philo))
 			break ;
+		ft_usleep(100);
 	}
 	return (NULL);
 }
