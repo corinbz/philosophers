@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/25 14:10:15 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:22:35 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ int	start_simulation(t_simulation *sim)
 			break ;
 		}
 		i++;
-		if (sim->num_philosophers > 100)
-			ft_usleep(50);
 	}
 	if (err)
 		return (clean_philo_threads(sim, i));

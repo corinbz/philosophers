@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 15:18:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/01 11:53:29 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:11:26 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,17 @@ static int	destroy_init_mutexes(t_simulation *sim, int index)
 
 	i = index;
 	if (pthread_mutex_destroy(&sim->print_mutex) != 0)
-		return(ft_error("Failed to destroy print mutex\n"));
+		return (ft_error("Failed to destroy print mutex\n"));
 	if (pthread_mutex_destroy(&sim->sim_stop_mut) != 0)
-		return(ft_error("Failed to destroy sim_stop_mut mutex\n"));
+		return (ft_error("Failed to destroy sim_stop_mut mutex\n"));
 	if (pthread_mutex_destroy(&sim->time_zero_mut) != 0)
-		return(ft_error("Failed to destroy time_zero_mut mutex\n"));
+		return (ft_error("Failed to destroy time_zero_mut mutex\n"));
 	while (i >= 0)
 	{
 		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
-			return(ft_error("Failed to destroy fork mutex\n"));
+			return (ft_error("Failed to destroy fork mutex\n"));
 		if (destroy_philosopher_mutexes(&sim->philosophers[i]) != 0)
-			return(ft_error("Failed to destroy philo mutexes\n"));
+			return (ft_error("Failed to destroy philo mutexes\n"));
 		i--;
 	}
 	return (0);
@@ -80,8 +80,8 @@ int	init_mutexes(t_simulation *sim)
 			return (destroy_init_mutexes(sim, i - 1), free_sim_memory(sim), 2);
 		if (pthread_mutex_init(&sim->forks[i], NULL) != 0)
 			return (ft_error("Failed to init fork mutex\n"),
-					destroy_init_mutexes(sim, i),
-					free_sim_memory(sim), 2);
+				destroy_init_mutexes(sim, i),
+				free_sim_memory(sim), 2);
 		i++;
 	}
 	return (0);

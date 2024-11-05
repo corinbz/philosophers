@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/25 14:12:47 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/05 16:22:12 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** Waits for simulation start time to be set
 ** @param philo: Pointer to philosopher structure
 */
-static void wait_for_start(t_philosopher *philo)
+static void	wait_for_start(t_philosopher *philo)
 {
 	while (1)
 	{
@@ -24,7 +24,7 @@ static void wait_for_start(t_philosopher *philo)
 		if (philo->time_zero != 0)
 		{
 			pthread_mutex_unlock(philo->time_zero_mut);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(philo->time_zero_mut);
 		usleep(100);
@@ -40,7 +40,9 @@ static void	handle_initial_delay(t_philosopher *philo)
 	int	group;
 
 	group = 0;
-	if (philo->num_philosophers > 100)
+	if (philo->num_philosophers == 1)
+		return ;
+	if (philo->num_philosophers >= 100)
 	{
 		group = philo->id % 4;
 		ft_usleep(100 * group);
@@ -48,7 +50,7 @@ static void	handle_initial_delay(t_philosopher *philo)
 	else if (philo->id % 2 == 0)
 		ft_usleep(1000);
 	else
-		ft_usleep((philo->id * 10) * 1000);
+		ft_usleep((philo->id) * 500);
 }
 
 /*
@@ -73,17 +75,22 @@ bool	check_simulation_stop(t_philosopher *philo)
 */
 static int	handle_philosopher_actions(t_philosopher *philo)
 {
+	bool	is_full;
+
 	if (!try_to_eat(philo))
 	{
-		ft_usleep((philo->time_to_eat / 10) * 1000);
+		ft_usleep(500);
 		return (1);
 	}
-	if (is_philosopher_full(philo))
+	pthread_mutex_lock(philo->last_meal_mut);
+	is_full = philo->is_full;
+	pthread_mutex_unlock(philo->last_meal_mut);
+	if (is_full)
 		return (0);
 	print_status(philo, "is sleeping");
 	ft_usleep(philo->time_to_sleep * 1000);
-	print_status(philo, "is thinking");
-	ft_usleep((philo->time_to_eat / 4) * 1000);
+	if (!check_simulation_stop(philo))
+		print_status(philo, "is thinking");
 	return (1);
 }
 
