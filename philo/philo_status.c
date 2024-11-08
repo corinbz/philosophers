@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/08 09:34:33 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:11:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,8 @@
 */
 void	print_status(t_philosopher *philo, const char *status)
 {
-	// bool	should_stop;
 	long	current_time;
 
-	// pthread_mutex_lock(philo->sim_stop_mut);
-	// should_stop = *philo->simulation_stop;
-	// pthread_mutex_unlock(philo->sim_stop_mut);
-	// if (should_stop)
-	// 	return ;
 	pthread_mutex_lock(philo->print_mutex);
 	if (!check_simulation_stop(philo))
 	{
@@ -35,7 +29,7 @@ void	print_status(t_philosopher *philo, const char *status)
 			(current_time - philo->time_zero),
 			philo->id,
 			status);
-		if((char)status[0] == 'd')
+		if ((char)status[0] == 'd')
 		{
 			pthread_mutex_lock(philo->sim_stop_mut);
 			*philo->simulation_stop = true;

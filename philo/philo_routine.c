@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/08 09:53:53 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:04:25 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ static void	handle_initial_delay(t_philosopher *philo)
 		return ;
 	if (philo->num_philosophers >= 100)
 	{
-		group = philo->id % 8;
-		ft_usleep(100 * group);
+		group = philo->id % 4;
+		ft_usleep(50 * group);
 		return ;
 	}
 	else if (philo->id % 2 == 0)
 	{
-		ft_usleep(500);
+		ft_usleep(200);
 		return ;
 	}
 	else
-		ft_usleep((philo->id) * 500);
+		ft_usleep(100 + (philo->id % 3) * 100);
 }
 
 /*

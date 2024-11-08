@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:47:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/08 09:54:52 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:12:19 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 		if (ate_last > sim->time_to_die)
 		{
 			pthread_mutex_unlock(sim->philosophers[i].last_meal_mut);
-			print_status(&sim->philosophers[i],"died");
+			print_status(&sim->philosophers[i], "died");
 			return (false);
 		}
 	}
@@ -107,7 +107,7 @@ void	*monitor_simulation(void *arg)
 	sim = (t_simulation *)arg;
 	if (!sim || !sim->philosophers)
 		return (NULL);
-	ft_usleep(sim->time_to_die * 500);
+	ft_usleep(sim->time_to_die * 300);
 	while (1)
 	{
 		if (should_stop_simulation(sim))
