@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleanup_utils.c                                    :+:      :+:    :+:   */
+/*   cleanup_mutex.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/10/23 15:10:39 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:05:23 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,12 @@ static int	destroy_fork_mutexes(t_simulation *sim, int num_forks)
 	status = 0;
 	while (i < num_forks)
 	{
-		if (pthread_mutex_destroy(&sim->forks[i]) != 0)
+		if (pthread_mutex_destroy(sim->philosophers[i].left_fork) != 0)
+		{
+			ft_error("Failed to destroy fork mutex\n");
+			status = 1;
+		}
+		if (pthread_mutex_destroy(sim->philosophers[i].right_fork) != 0)
 		{
 			ft_error("Failed to destroy fork mutex\n");
 			status = 1;

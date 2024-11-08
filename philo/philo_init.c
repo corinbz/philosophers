@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/01 11:10:32 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:02:36 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ static void	init_philosopher_basic(t_philosopher *philo, int id,
 	t_simulation *sim)
 {
 	philo->id = id + 1;
-	philo->left_fork = &sim->forks[id];
-	philo->right_fork = &sim->forks[(id + 1) % sim->num_philosophers];
 	philo->meals_eaten = 0;
 	philo->simulation_stop = &sim->simulation_stop;
 	philo->print_mutex = &sim->print_mutex;

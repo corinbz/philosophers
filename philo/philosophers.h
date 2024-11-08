@@ -58,7 +58,6 @@ struct s_philosopher
 struct s_simulation
 {
 	t_philosopher	*philosophers;
-	pthread_mutex_t	*forks;
 	int				num_philosophers;
 	int				time_to_die;
 	int				time_to_eat;

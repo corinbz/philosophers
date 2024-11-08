@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:40:46 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/05 16:22:35 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:02:06 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,6 @@ static int	allocate_resources(t_simulation *sim)
 	sim->philosophers = malloc(sizeof(t_philosopher) * sim->num_philosophers);
 	if (!sim->philosophers)
 		return (0);
-	sim->forks = malloc(sizeof(pthread_mutex_t) * sim->num_philosophers);
-	if (!sim->forks)
-	{
-		free(sim->philosophers);
-		return (0);
-	}
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:27:31 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/01 12:09:41 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:11:24 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,6 @@ void	free_sim_memory(t_simulation *sim)
 {
 	if (!sim)
 		return ;
-	if (sim->forks)
-	{
-		free(sim->forks);
-		sim->forks = NULL;
-	}
 	if (sim->philosophers)
 	{
 		free(sim->philosophers);
@@ -78,13 +73,15 @@ int	destroy_philosopher_mutexes(t_philosopher *philo)
 	int	status;
 
 	status = 0;
-	if (philo->last_meal_mut)
-	{
-		if (pthread_mutex_destroy(philo->last_meal_mut) != 0)
-			status = 1;
-		free(philo->last_meal_mut);
-		philo->last_meal_mut = NULL;
-	}
+	if (pthread_mutex_destroy(philo->last_meal_mut) != 0)
+		status = 1;
+	if (pthread_mutex_destroy(philo->left_fork) != 0)
+		status = 1;
+	if (pthread_mutex_destroy(philo->left_fork) != 0)
+		status = 1;
+	free(philo->last_meal_mut);
+	free(philo->left_fork);
+	free(philo->right_fork);
 	return (status);
 }
 

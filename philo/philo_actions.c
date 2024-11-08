@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/08 10:11:06 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:49:19 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,15 @@ static bool	handle_single_philosopher(t_philosopher *philo)
 static void	setup_fork_order(t_philosopher *philo,
 	pthread_mutex_t **first, pthread_mutex_t **second)
 {
-	if (philo->left_fork_id < philo->right_fork_id)
-	{
-		*first = philo->left_fork;
-		*second = philo->right_fork;
-	}
-	else
+	if (philo->id % 2 == 0)
 	{
 		*first = philo->right_fork;
 		*second = philo->left_fork;
+	}
+	else
+	{
+		*first = philo->left_fork;
+		*second = philo->right_fork;
 	}
 }
 
@@ -57,15 +57,15 @@ static void	setup_fork_order(t_philosopher *philo,
 */
 static void	release_forks(t_philosopher *philo)
 {
-	if (philo->left_fork_id < philo->right_fork_id)
+	if (philo->id % 2 == 0)
 	{
-		pthread_mutex_unlock(philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
 	}
 	else
 	{
-		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 	}
 }
 
@@ -84,19 +84,14 @@ bool	try_pickup_forks(t_philosopher *philo)
 	setup_fork_order(philo, &first_fork, &second_fork);
 	if (check_simulation_stop(philo))
 		return (false);
-	if (pthread_mutex_lock(first_fork) != 0)
-		return (false);
+	pthread_mutex_lock(first_fork);
 	print_status(philo, "has taken a fork");
 	if (check_simulation_stop(philo))
 	{
 		pthread_mutex_unlock(first_fork);
 		return (false);
 	}
-	if (pthread_mutex_lock(second_fork) != 0)
-	{
-		pthread_mutex_unlock(first_fork);
-		return (false);
-	}
+	pthread_mutex_lock(second_fork);
 	print_status(philo, "has taken a fork");
 	return (true);
 }
@@ -112,10 +107,11 @@ int	try_to_eat(t_philosopher *philo)
 		return (0);
 	pthread_mutex_lock(philo->last_meal_mut);
 	philo->last_meal_time = get_current_time();
+	pthread_mutex_unlock(philo->last_meal_mut);
 	print_status(philo, "is eating");
 	ft_usleep(philo->time_to_eat * 1000);
 	release_forks(philo);
-	pthread_mutex_unlock(philo->last_meal_mut);
-	update_meal_status(philo);
+	if(philo->num_philosophers != -1)
+		update_meal_status(philo);
 	return (1);
 }
