@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:47:27 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/05 16:08:24 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 09:54:52 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,20 @@
 ** @param sim: Pointer to simulation structure
 ** @param i: Index of dead philosopher
 */
-static void	handle_death(t_simulation *sim, int i, long current_time)
-{
-	pthread_mutex_lock(sim->philosophers[i].sim_stop_mut);
-	pthread_mutex_lock(&sim->print_mutex);
-	if (!sim->simulation_stop)
-	{
-		printf("%ld %d died\n",
-			current_time - sim->philosophers[i].time_zero,
-			sim->philosophers[i].id);
-		sim->simulation_stop = true;
-	}
-	pthread_mutex_unlock(&sim->print_mutex);
-	pthread_mutex_unlock(sim->philosophers[i].sim_stop_mut);
-}
+// static void	handle_death(t_simulation *sim, int i, long current_time)
+// {
+// 	pthread_mutex_lock(&sim->sim_stop_mut);
+// 	pthread_mutex_lock(&sim->print_mutex);
+// 	if (!sim->simulation_stop)
+// 	{
+// 		printf("%ld %d died\n",
+// 			current_time - sim->philosophers[i].time_zero,
+// 			sim->philosophers[i].id);
+// 		sim->simulation_stop = true;
+// 	}
+// 	pthread_mutex_unlock(&sim->print_mutex);
+// 	pthread_mutex_unlock(&sim->sim_stop_mut);
+// }
 
 /*
 ** Checks health status of a single philosopher
@@ -53,7 +53,7 @@ static bool	check_philosopher_health(t_simulation *sim, int i)
 		if (ate_last > sim->time_to_die)
 		{
 			pthread_mutex_unlock(sim->philosophers[i].last_meal_mut);
-			handle_death(sim, i, current_time);
+			print_status(&sim->philosophers[i],"died");
 			return (false);
 		}
 	}
@@ -116,7 +116,7 @@ void	*monitor_simulation(void *arg)
 			return (NULL);
 		if (check_all_philosophers_full(sim))
 			return (NULL);
-		ft_usleep(500);
+		ft_usleep(sim->time_to_die * 300);
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/05 16:22:12 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 09:53:53 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	wait_for_start(t_philosopher *philo)
 			break ;
 		}
 		pthread_mutex_unlock(philo->time_zero_mut);
-		usleep(100);
+		ft_usleep(200);
 	}
 }
 
@@ -44,11 +44,15 @@ static void	handle_initial_delay(t_philosopher *philo)
 		return ;
 	if (philo->num_philosophers >= 100)
 	{
-		group = philo->id % 4;
+		group = philo->id % 8;
 		ft_usleep(100 * group);
+		return ;
 	}
 	else if (philo->id % 2 == 0)
-		ft_usleep(1000);
+	{
+		ft_usleep(500);
+		return ;
+	}
 	else
 		ft_usleep((philo->id) * 500);
 }
@@ -79,7 +83,7 @@ static int	handle_philosopher_actions(t_philosopher *philo)
 
 	if (!try_to_eat(philo))
 	{
-		ft_usleep(500);
+		ft_usleep(200);
 		return (1);
 	}
 	pthread_mutex_lock(philo->last_meal_mut);
@@ -112,7 +116,7 @@ void	*philosopher_routine(void *arg)
 	{
 		if (!handle_philosopher_actions(philo))
 			break ;
-		ft_usleep(100);
+		ft_usleep(200);
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 14:18:45 by ccraciun          #+#    #+#             */
-/*   Updated: 2024/11/01 11:50:20 by ccraciun         ###   ########.fr       */
+/*   Updated: 2024/11/08 09:34:33 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@
 */
 void	print_status(t_philosopher *philo, const char *status)
 {
-	bool	should_stop;
+	// bool	should_stop;
 	long	current_time;
 
-	pthread_mutex_lock(philo->sim_stop_mut);
-	should_stop = *philo->simulation_stop;
-	pthread_mutex_unlock(philo->sim_stop_mut);
-	if (should_stop)
-		return ;
+	// pthread_mutex_lock(philo->sim_stop_mut);
+	// should_stop = *philo->simulation_stop;
+	// pthread_mutex_unlock(philo->sim_stop_mut);
+	// if (should_stop)
+	// 	return ;
 	pthread_mutex_lock(philo->print_mutex);
 	if (!check_simulation_stop(philo))
 	{
@@ -35,31 +35,16 @@ void	print_status(t_philosopher *philo, const char *status)
 			(current_time - philo->time_zero),
 			philo->id,
 			status);
+		if((char)status[0] == 'd')
+		{
+			pthread_mutex_lock(philo->sim_stop_mut);
+			*philo->simulation_stop = true;
+			pthread_mutex_unlock(philo->sim_stop_mut);
+		}
 	}
 	pthread_mutex_unlock(philo->print_mutex);
 }
 
-/*
-** Checks if philosopher has exceeded time to die
-** @param philo: Pointer to philosopher structure
-** @return: true if philosopher should die, false otherwise
-*/
-// bool	check_death_time(t_philosopher *philo)
-// {
-// 	long	current_time;
-// 	long	last_meal;
-
-// 	pthread_mutex_lock(philo->last_meal_mut);
-// 	current_time = get_current_time();
-// 	last_meal = current_time - philo->last_meal_time;
-// 	pthread_mutex_unlock(philo->last_meal_mut);
-// 	return (last_meal >= philo->time_to_die);
-// }
-
-/*
-** Updates philosopher's meal count and full status
-** @param philo: Pointer to philosopher structure
-*/
 void	update_meal_status(t_philosopher *philo)
 {
 	pthread_mutex_lock(philo->last_meal_mut);
