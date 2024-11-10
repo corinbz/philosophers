@@ -6,7 +6,7 @@
 /*   By: corin <corin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 10:03:35 by corin             #+#    #+#             */
-/*   Updated: 2024/11/10 17:13:33 by corin            ###   ########.fr       */
+/*   Updated: 2024/11/10 17:39:10 by corin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,22 @@ static void	*handle_single_philo(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->stop_sim_mut);
 	return (NULL);
 }
-
+/*
+* The philosopher thinks for a time that is half the time it would take for
+* him to starve to death.
+* The purpose of this function is to reduce fork contention by making the
+* philosopher wait for a random amount of time before trying to take the forks
+* again.
+*/
 static void	think(t_philo *philo, bool silent)
 {
 	long	thinking_time;
+	long	time_since_last_meal;
 
 	pthread_mutex_lock(&philo->last_meal_time_mut);
-	thinking_time = (philo->data->time_to_die - get_current_time()
-			- philo->last_meal_time - philo->data->time_to_eat) / 2;
+	time_since_last_meal = get_current_time() - philo->last_meal_time;
+	thinking_time = (philo->data->time_to_die - time_since_last_meal
+			- philo->data->time_to_eat) / 2;
 	pthread_mutex_unlock(&philo->last_meal_time_mut);
 	if (thinking_time < 0)
 		thinking_time = 0;
