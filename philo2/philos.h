@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philos.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: corin <corin@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 07:41:52 by corin             #+#    #+#             */
-/*   Updated: 2024/11/10 17:09:50 by corin            ###   ########.fr       */
+/*   Updated: 2024/11/11 12:03:43 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_data	*init_data(int ac, char **av);
 void	free_forks_mut(t_data *data);
 
 //time_utils.c
-void	ft_usleep(long ms);
+void	ft_usleep(long ms, t_data *data);
 long	get_current_time(void);
 void	wait_for_start(long time_zero);
 
@@ -87,7 +87,7 @@ bool	start_sim(t_data *data);
 //print_utils.c
 size_t	ft_strlen(const char *str);
 int		display_message(char *str, int ret);
-void	write_status(t_philo *philo, char *str);
+void	write_status(t_philo *philo, bool monitor_report, char *str);
 
 //cleanup.c
 void	clean_all(t_data *data);

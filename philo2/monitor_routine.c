@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor_routine.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: corin <corin@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 10:05:47 by corin             #+#    #+#             */
-/*   Updated: 2024/11/10 17:05:46 by corin            ###   ########.fr       */
+/*   Updated: 2024/11/11 12:29:20 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ static bool	philo_starved(t_philo *philo)
 	current_time = get_current_time();
 	if ((current_time - philo->last_meal_time) >= philo->data->time_to_die)
 	{
-		write_status(philo, "died");
 		set_sim_stop_flag(philo->data, true);
+		write_status(philo, true, "died");
 		pthread_mutex_unlock(&philo->last_meal_time_mut);
 		return (true);
 	}
@@ -65,6 +65,7 @@ void	*monitor_routine(void *arg)
 	t_data	*data;
 
 	data = (t_data *)arg;
+	set_sim_stop_flag(data, false);
 	wait_for_start(data->time_zero);
 	while (1)
 	{

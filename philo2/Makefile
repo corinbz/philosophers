@@ -1,13 +1,7 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -pthread
-MODE = none
-ifeq ($(MODE), debug)
-	CFLAGS	+= -fsanitize=thread -g
-endif
-
--fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g -pthread #-fsanitize=thread
 
 OBJDIR = obj/
 

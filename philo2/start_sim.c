@@ -3,21 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   start_sim.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: corin <corin@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccraciun <ccraciun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 10:01:57 by corin             #+#    #+#             */
-/*   Updated: 2024/11/10 15:25:54 by corin            ###   ########.fr       */
+/*   Updated: 2024/11/11 12:47:14 by ccraciun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philos.h"
 
+/*
+time_zero is set a bit in the future so that there is enough time for threads to
+be created
+*/
 bool	start_sim(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	data->time_zero = get_current_time() + (data->num_philos * 2 * 10);
+	data->time_zero = get_current_time() + (data->num_philos * 20);
 	while (i < data->num_philos)
 	{
 		if (pthread_create(&data->philos[i]->philo_thread, NULL,
